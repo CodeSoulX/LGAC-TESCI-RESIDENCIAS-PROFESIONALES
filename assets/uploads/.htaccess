@@ -1,0 +1,7 @@
+# Evitar que archivos subidos se ejecuten como PHP
+<FilesMatch "\.ph(p[3-8]?|t|tml)$">
+  Order Deny,Allow
+  Deny from all
+</FilesMatch>
+Options -ExecCGI
+AddType text/plain .php .phtml .php3 .php4 .php5 .php7

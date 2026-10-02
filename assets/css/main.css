@@ -1,0 +1,690 @@
+/* =============================================
+   TESCI · LGAC — Portal del Cuerpo Académico
+   Paleta: azul institucional profundo + arena cálida
+   Tipografía: Inter (sans) + Lora (serif display)
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,600;1,400&display=swap');
+
+/* ─── Variables ─────────────────────────────── */
+:root {
+  --azul-oscuro: #1a2c4e;
+  --azul-medio: #2c4a7c;
+  --azul-claro: #82c8e5;
+  --arena: #589976;
+  --arena-oscura: #e8e2d4;
+  --texto: #2a2a2a;
+  --texto-suave: #5a5a5a;
+  --blanco: #ffffff;
+  --sombra: 0 2px 12px rgba(26, 44, 78, .10);
+  --radio: 6px;
+  --transicion: .18s ease;
+}
+
+/* ─── Reset mínimo ──────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--texto);
+  background: var(--arena);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--azul-medio);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--azul-claro);
+}
+
+/* ─── Utilidades ────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.gap-1 {
+  gap: .5rem;
+}
+
+.gap-2 {
+  gap: 1rem;
+}
+
+.mt-2 {
+  margin-top: 1.5rem;
+}
+
+.mb-2 {
+  margin-bottom: 1.5rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* ─── Botones ───────────────────────────────── */
+.btn {
+  display: inline-block;
+  padding: .55rem 1.2rem;
+  border-radius: var(--radio);
+  font-size: .9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background var(--transicion), transform var(--transicion);
+}
+
+.btn:active {
+  transform: scale(.97);
+}
+
+.btn-primario {
+  background: var(--azul-medio);
+  color: var(--blanco);
+}
+
+.btn-primario:hover {
+  background: var(--azul-oscuro);
+  color: var(--blanco);
+}
+
+.btn-secundario {
+  background: transparent;
+  color: var(--azul-medio);
+  border: 1.5px solid var(--azul-medio);
+}
+
+.btn-secundario:hover {
+  background: var(--azul-medio);
+  color: var(--blanco);
+}
+
+.btn-peligro {
+  background: #c0392b;
+  color: var(--blanco);
+}
+
+.btn-peligro:hover {
+  background: #a93226;
+}
+
+.btn-sm {
+  padding: .35rem .85rem;
+  font-size: .82rem;
+}
+
+.btn-bloque {
+  width: 100%;
+  text-align: center;
+}
+
+/* ─── Formularios ───────────────────────────── */
+.campo {
+  margin-bottom: 1.1rem;
+}
+
+.campo label {
+  display: block;
+  font-size: .875rem;
+  font-weight: 500;
+  margin-bottom: .35rem;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: .6rem .85rem;
+  border: 1.5px solid var(--arena-oscura);
+  border-radius: var(--radio);
+  font-size: .95rem;
+  font-family: inherit;
+  background: var(--blanco);
+  color: var(--texto);
+  transition: border-color var(--transicion);
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: none;
+  border-color: var(--azul-claro);
+  box-shadow: 0 0 0 3px rgba(74, 123, 196, .15);
+}
+
+.campo textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* ─── Alertas ───────────────────────────────── */
+.alerta {
+  padding: .75rem 1rem;
+  border-radius: var(--radio);
+  font-size: .9rem;
+  margin-bottom: 1rem;
+}
+
+.alerta-error {
+  background: #fde8e8;
+  color: #c0392b;
+  border-left: 3px solid #c0392b;
+}
+
+.alerta-exito {
+  background: #e8f5e9;
+  color: #27ae60;
+  border-left: 3px solid #27ae60;
+}
+
+.alerta-info {
+  background: #e8f0fb;
+  color: var(--azul-oscuro);
+  border-left: 3px solid var(--azul-claro);
+}
+
+/* ─── Encabezado (nav pública) ──────────────── */
+.nav-principal {
+  background: var(--azul-oscuro);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--sombra);
+}
+
+.nav-principal .contenedor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.nav-logo img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.nav-logo-texto {
+  color: var(--blanco);
+}
+
+.nav-logo-texto strong {
+  display: block;
+  font-size: 1rem;
+  letter-spacing: .02em;
+}
+
+.nav-logo-texto span {
+  display: block;
+  font-size: .75rem;
+  opacity: .7;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: rgba(255, 255, 255, .85);
+  font-size: .9rem;
+  transition: color var(--transicion);
+}
+
+.nav-links a:hover {
+  color: var(--blanco);
+}
+
+.nav-links a.activo {
+  color: var(--blanco);
+  font-weight: 600;
+}
+
+/* ─── Hero ──────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, var(--azul-oscuro) 55%, var(--azul-medio));
+  color: var(--blanco);
+  padding: 5rem 0 4rem;
+  text-align: center;
+}
+
+.hero-titulo {
+  font-family: 'Lora', serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.25;
+  margin-bottom: 1rem;
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  opacity: .8;
+  max-width: 560px;
+  margin: 0 auto 2rem;
+}
+
+/* ─── Sección genérica ──────────────────────── */
+.seccion {
+  padding: 3.5rem 0;
+}
+
+.seccion-titulo {
+  font-family: 'Lora', serif;
+  font-size: 1.55rem;
+  color: var(--azul-oscuro);
+  margin-bottom: 2rem;
+  padding-bottom: .5rem;
+  border-bottom: 2px solid var(--arena-oscura);
+}
+
+/* ─── Tarjetas de docentes ──────────────────── */
+.grid-docentes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.5rem;
+}
+
+.tarjeta-docente {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  box-shadow: var(--sombra);
+  transition: transform var(--transicion);
+}
+
+.tarjeta-docente:hover {
+  transform: translateY(-3px);
+}
+
+.tarjeta-docente img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto .85rem;
+  border: 3px solid var(--arena-oscura);
+}
+
+.tarjeta-docente .grado {
+  font-size: .78rem;
+  color: var(--texto-suave);
+  margin-bottom: .25rem;
+}
+
+.tarjeta-docente .nombre {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: .35rem;
+  color: var(--azul-oscuro);
+}
+
+.tarjeta-docente .espec {
+  font-size: .82rem;
+  color: var(--texto-suave);
+  margin-bottom: 1rem;
+}
+
+/* ─── Feed de publicaciones ─────────────────── */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tarjeta-pub {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  padding: 1.4rem 1.5rem;
+  box-shadow: var(--sombra);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.pub-icono {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radio);
+  background: var(--arena-oscura);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--azul-medio);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.pub-meta {
+  font-size: .8rem;
+  color: var(--texto-suave);
+  margin-bottom: .3rem;
+}
+
+.pub-titulo {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--azul-oscuro);
+  margin-bottom: .4rem;
+}
+
+.pub-desc {
+  font-size: .9rem;
+  color: var(--texto-suave);
+}
+
+.pub-archivos {
+  margin-top: .75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.pub-archivo-link {
+  font-size: .8rem;
+  padding: .3rem .7rem;
+  border-radius: 20px;
+  background: var(--arena);
+  color: var(--azul-medio);
+  border: 1px solid var(--arena-oscura);
+  transition: background var(--transicion);
+}
+
+.pub-archivo-link:hover {
+  background: var(--arena-oscura);
+}
+
+.badge-categoria {
+  display: inline-block;
+  font-size: .72rem;
+  padding: .2rem .6rem;
+  border-radius: 20px;
+  background: var(--azul-oscuro);
+  color: var(--blanco);
+  margin-right: .4rem;
+  margin-bottom: .3rem;
+}
+
+.badge-anio {
+  display: inline-block;
+  font-size: .72rem;
+  padding: .2rem .6rem;
+  border-radius: 20px;
+  background: var(--arena-oscura);
+  color: var(--texto-suave);
+}
+
+/* ─── Panel admin / docente ─────────────────── */
+.panel-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+.panel-sidebar {
+  background: var(--azul-oscuro);
+  color: var(--blanco);
+  padding: 1.5rem 1rem;
+}
+
+.panel-sidebar .logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.panel-sidebar .logo strong {
+  display: block;
+  font-size: .95rem;
+}
+
+.panel-sidebar .logo span {
+  font-size: .75rem;
+  opacity: .6;
+}
+
+.sidebar-nav {
+  list-style: none;
+}
+
+.sidebar-nav li a {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem .75rem;
+  border-radius: var(--radio);
+  color: rgba(255, 255, 255, .8);
+  font-size: .9rem;
+  transition: background var(--transicion), color var(--transicion);
+}
+
+.sidebar-nav li a:hover,
+.sidebar-nav li a.activo {
+  background: rgba(255, 255, 255, .12);
+  color: var(--blanco);
+}
+
+.panel-main {
+  background: var(--arena);
+  padding: 2rem 2.5rem;
+  overflow-y: auto;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--arena-oscura);
+}
+
+.panel-header h1 {
+  font-family: 'Lora', serif;
+  font-size: 1.4rem;
+  color: var(--azul-oscuro);
+}
+
+/* ─── Tabla de datos ────────────────────────── */
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+  background: var(--blanco);
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: var(--sombra);
+}
+
+.tabla thead {
+  background: var(--azul-oscuro);
+  color: var(--blanco);
+}
+
+.tabla th,
+.tabla td {
+  padding: .75rem 1rem;
+  text-align: left;
+}
+
+.tabla tbody tr:nth-child(even) {
+  background: var(--arena);
+}
+
+.tabla tbody tr:hover {
+  background: var(--arena-oscura);
+}
+
+.tabla th.acciones-columna,
+.tabla td.acciones-columna {
+  text-align: center;
+}
+
+.acciones-botones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .acciones-form .btn-peligro:hover,
+  .acciones-form .btn-peligro:active,
+  .acciones-form .btn-peligro:focus-visible {
+    background: #fff;
+    color: var(--azul-medio);
+  }
+
+  gap: .4rem;
+}
+
+.acciones-botones>.btn,
+.acciones-form>.btn {
+  display: inline-flex;
+  width: 116px;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: .45rem .5rem;
+  white-space: nowrap;
+}
+
+.acciones-form {
+  display: inline-flex;
+  margin: 0;
+}
+
+/* ─── Caja de login ─────────────────────────── */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--azul-oscuro);
+}
+
+.login-caja {
+  background: var(--blanco);
+  border-radius: 10px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, .25);
+}
+
+.login-caja h1 {
+  font-family: 'Lora', serif;
+  font-size: 1.4rem;
+  color: var(--azul-oscuro);
+  margin-bottom: .3rem;
+}
+
+.login-caja p {
+  font-size: .85rem;
+  color: var(--texto-suave);
+  margin-bottom: 1.75rem;
+}
+
+/* ─── Galería de imágenes ───────────────────── */
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: .75rem;
+}
+
+.galeria img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--radio);
+  cursor: pointer;
+  transition: opacity var(--transicion);
+}
+
+.galeria img:hover {
+  opacity: .85;
+}
+
+/* ─── Pie de página ─────────────────────────── */
+footer {
+  background: var(--azul-oscuro);
+  color: rgba(255, 255, 255, .6);
+  text-align: center;
+  padding: 1.5rem;
+  font-size: .82rem;
+  margin-top: 3rem;
+}
+
+footer strong {
+  color: var(--blanco);
+}
+
+/* ─── Responsivo ────────────────────────────── */
+@media (max-width: 768px) {
+  .panel-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-sidebar {
+    display: none;
+  }
+
+  /* en móvil se puede agregar menú hamburguesa */
+  .panel-main {
+    padding: 1.25rem;
+  }
+
+  .tarjeta-pub {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  /* simplificado; se puede añadir toggle */
+}

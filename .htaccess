@@ -1,0 +1,22 @@
+# ─── Seguridad general ─────────────────────────
+Options -Indexes
+ServerSignature Off
+
+# Bloquear acceso directo a includes/
+<FilesMatch "\.(sql|php)$">
+  Order Allow,Deny
+  Allow from all
+</FilesMatch>
+
+# Forzar HTTPS (descomenta cuando tengas SSL)
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Cabeceras de seguridad
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
