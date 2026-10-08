@@ -10,7 +10,7 @@ define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
 // URL base del sitio (sin / al final)
-define('BASE_URL', 'http://localhost:8080/Proyectos/tesi_lgac');
+define('BASE_URL', 'http://localhost:8012/Proyectos/tesi_lgac');
 
 // Ruta absoluta a la carpeta uploads
 define('UPLOAD_PATH', __DIR__ . '/../assets/uploads/');

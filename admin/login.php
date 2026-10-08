@@ -51,10 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="password">Contraseña</label>
         <input type="password" id="password" name="password" required autocomplete="current-password">
       </div>
-      <button type="submit" class="btn btn-primario btn-bloque">Ingresar como administrador</button>
+      <button type="submit" class="btn btn-primario btn-bloque">Ingresar</button>
     </form>
     <p style="text-align:center;margin-top:1rem;font-size:.82rem;">
-      <a href="../docente/login.php">Soy docente →</a>
+      <a href="../docente/login.php">Soy docente →</a><br>
+      <a href="../index.php">← Volver al portal público</a>
     </p>
   </div>
 </body>

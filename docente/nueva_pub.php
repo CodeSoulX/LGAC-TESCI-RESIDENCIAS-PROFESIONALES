@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/publication_taxonomy.php';
 requerirDocente();
 
 $db    = getDB();
@@ -9,6 +10,7 @@ $error = '';
 
 // ── Categorías ─────────────────────────────────
 $cats = $db->query("SELECT * FROM categorias ORDER BY nombre")->fetchAll();
+$subcategoriasDisponibles = $db->query("SELECT DISTINCT nombre FROM subcategorias ORDER BY nombre")->fetchAll(PDO::FETCH_COLUMN);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!verificarCSRF($_POST['csrf_token'] ?? '')) {
@@ -16,56 +18,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   } else {
     $titulo      = trim($_POST['titulo'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
+    $subcategoria = trim($_POST['subcategoria'] ?? '');
     $anio        = intval($_POST['anio'] ?? 0) ?: null;
-    $cat_id      = intval($_POST['categoria_id'] ?? 0);
+    $categoriaSeleccion = trim($_POST['categoria_id'] ?? '');
+    $nuevaCategoria = trim($_POST['nueva_categoria'] ?? '');
     $visible     = isset($_POST['visible']) ? 1 : 0;
     $destacado   = isset($_POST['destacado']) ? 1 : 0;
 
-    if (!$titulo || !$cat_id) {
+    if (!$titulo || !$categoriaSeleccion) {
       $error = 'El título y la categoría son obligatorios.';
+    } elseif (mb_strlen($subcategoria, 'UTF-8') > 120) {
+      $error = 'La subcategoría no debe superar 120 caracteres.';
     } else {
-      // ── Insertar publicación ──────────────
-      $stmt = $db->prepare(
-        "INSERT INTO publicaciones
-                 (usuario_id, categoria_id, titulo, descripcion, anio, visible, destacado)
-                 VALUES (?, ?, ?, ?, ?, ?, ?)"
-      );
-      $stmt->execute([$uid, $cat_id, $titulo, $descripcion, $anio, $visible, $destacado]);
-      $pub_id = $db->lastInsertId();
-
-      // ── Subir archivos (múltiples) ────────
-      if (!empty($_FILES['archivos']['name'][0])) {
-        $total = count($_FILES['archivos']['name']);
-        for ($i = 0; $i < $total; $i++) {
-          $archivo = [
-            'name'     => $_FILES['archivos']['name'][$i],
-            'type'     => $_FILES['archivos']['type'][$i],
-            'tmp_name' => $_FILES['archivos']['tmp_name'][$i],
-            'error'    => $_FILES['archivos']['error'][$i],
-            'size'     => $_FILES['archivos']['size'][$i],
-          ];
-          if ($archivo['error'] === UPLOAD_ERR_NO_FILE) continue;
-          $res = subirArchivo($archivo, 'pub_' . $pub_id);
-          if ($res['ok']) {
-            $ins = $db->prepare(
-              "INSERT INTO archivos
-                             (publicacion_id, nombre_original, nombre_guardado, tipo_mime, tamanio, tipo)
-                             VALUES (?, ?, ?, ?, ?, ?)"
-            );
-            $ins->execute([
-              $pub_id,
-              $res['nombre_original'],
-              $res['nombre_guardado'],
-              $res['tipo_mime'],
-              $res['tamanio'],
-              $res['tipo'],
-            ]);
-          }
-        }
+      $pub_id = 0;
+      try {
+        $db->beginTransaction();
+        $cat_id = resolverCategoriaPublicacion($db, $categoriaSeleccion, $nuevaCategoria);
+        $subcategoria = registrarSubcategoriaPublicacion($db, $cat_id, $subcategoria);
+        $stmt = $db->prepare(
+          "INSERT INTO publicaciones
+                 (usuario_id, categoria_id, subcategoria, titulo, descripcion, anio, visible, destacado)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+        $stmt->execute([$uid, $cat_id, $subcategoria ?: null, $titulo, $descripcion, $anio, $visible, $destacado]);
+        $pub_id = $db->lastInsertId();
+        $db->commit();
+      } catch (InvalidArgumentException $validationError) {
+        if ($db->inTransaction()) $db->rollBack();
+        $error = $validationError->getMessage();
+      } catch (Throwable $exception) {
+        if ($db->inTransaction()) $db->rollBack();
+        error_log('Create publication failed: ' . $exception->getMessage());
+        $error = 'No se pudo guardar la publicación. Inténtalo de nuevo.';
       }
 
-      header('Location: panel.php?msg=creada');
-      exit;
+      if (!$error) {
+        // ── Subir archivos (múltiples) ────────
+        if (!empty($_FILES['archivos']['name'][0])) {
+          $total = count($_FILES['archivos']['name']);
+          for ($i = 0; $i < $total; $i++) {
+            $archivo = [
+              'name'     => $_FILES['archivos']['name'][$i],
+              'type'     => $_FILES['archivos']['type'][$i],
+              'tmp_name' => $_FILES['archivos']['tmp_name'][$i],
+              'error'    => $_FILES['archivos']['error'][$i],
+              'size'     => $_FILES['archivos']['size'][$i],
+            ];
+            if ($archivo['error'] === UPLOAD_ERR_NO_FILE) continue;
+            $res = subirArchivo($archivo, 'pub_' . $pub_id);
+            if ($res['ok']) {
+              $ins = $db->prepare(
+                "INSERT INTO archivos
+                             (publicacion_id, nombre_original, nombre_guardado, tipo_mime, tamanio, tipo)
+                             VALUES (?, ?, ?, ?, ?, ?)"
+              );
+              $ins->execute([
+                $pub_id,
+                $res['nombre_original'],
+                $res['nombre_guardado'],
+                $res['tipo_mime'],
+                $res['tamanio'],
+                $res['tipo'],
+              ]);
+            }
+          }
+        }
+
+        header('Location: panel.php?msg=creada');
+        exit;
+      }
     }
   }
 }
@@ -84,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="panel-layout">
     <aside class="panel-sidebar">
-      <div class="logo"><strong>TESCI · LGAC</strong><span>Panel Docente</span></div>
+      <div class="logo"><strong>TESCI · LGAC</strong><span>Panel Docente</span><span class="panel-user-name">Bienvenido, <?= htmlspecialchars($_SESSION['nombre'] ?? 'Docente') ?></span></div>
       <ul class="sidebar-nav">
         <li><a href="panel.php">📋 Mis publicaciones</a></li>
         <li><a href="nueva_pub.php" class="activo">➕ Nueva publicación</a></li>
@@ -103,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="alerta alerta-error"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
 
-      <form method="POST" enctype="multipart/form-data" style="max-width:680px;">
+      <form method="POST" enctype="multipart/form-data" data-publication-form style="max-width:680px;">
         <?= campoCSRF() ?>
 
         <div class="campo">
@@ -122,7 +143,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?= htmlspecialchars($c['nombre']) ?>
               </option>
             <?php endforeach; ?>
+            <option value="nueva" <?= (($_POST['categoria_id'] ?? '') === 'nueva') ? 'selected' : '' ?>>+ Agregar nueva categoría</option>
           </select>
+        </div>
+
+        <div class="campo" data-new-category-field <?= (($_POST['categoria_id'] ?? '') === 'nueva') ? '' : 'hidden' ?>>
+          <label for="nueva_categoria">Nombre de categoría nueva (si seleccionaste agregar nueva)</label>
+          <input type="text" id="nueva_categoria" name="nueva_categoria" maxlength="80"
+            <?= (($_POST['categoria_id'] ?? '') === 'nueva') ? 'required' : '' ?>
+            value="<?= htmlspecialchars($_POST['nueva_categoria'] ?? '') ?>">
+        </div>
+
+        <div class="campo">
+          <label for="subcategoria">Subcategoría (opcional)</label>
+          <input type="text" id="subcategoria" name="subcategoria" list="subcategorias-disponibles" maxlength="120"
+            value="<?= htmlspecialchars($_POST['subcategoria'] ?? '') ?>">
+          <datalist id="subcategorias-disponibles">
+            <?php foreach ($subcategoriasDisponibles as $subcategoriaDisponible): ?>
+              <option value="<?= htmlspecialchars($subcategoriaDisponible, ENT_QUOTES, 'UTF-8') ?>">
+              <?php endforeach; ?>
+          </datalist>
+          <small>Si escribes una nueva, quedará disponible en los filtros para futuras publicaciones.</small>
         </div>
 
         <div class="campo">
@@ -162,6 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </form>
     </main>
   </div>
+  <script src="../assets/js/publication-taxonomy.js?v=<?= filemtime(__DIR__ . '/../assets/js/publication-taxonomy.js') ?>" defer></script>
 </body>
 
 </html>

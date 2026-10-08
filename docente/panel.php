@@ -33,7 +33,7 @@ $msg = $_GET['msg'] ?? '';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mi panel · TESCI LGAC</title>
-  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/main.css?v=<?= filemtime(__DIR__ . '/../assets/css/main.css') ?>">
   <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>
 
@@ -45,6 +45,7 @@ $msg = $_GET['msg'] ?? '';
       <div class="logo">
         <strong>TESCI · LGAC</strong>
         <span>Panel Docente</span>
+        <span class="panel-user-name">Bienvenido, <?= htmlspecialchars($_SESSION['nombre'] ?? 'Docente') ?></span>
       </div>
       <ul class="sidebar-nav">
         <li><a href="panel.php" class="activo">📋 Mis publicaciones</a></li>
@@ -58,7 +59,7 @@ $msg = $_GET['msg'] ?? '';
     <main class="panel-main">
       <div class="panel-header">
         <h1>Mis publicaciones</h1>
-        <a href="nueva_pub.php" class="btn btn-primario btn-sm">+ Nueva publicación</a>
+        <a href="nueva_pub.php" class="btn btn-nueva-publicacion btn-sm">+ Nueva publicación</a>
       </div>
 
       <?php if ($msg === 'creada'): ?>
@@ -89,7 +90,7 @@ $msg = $_GET['msg'] ?? '';
                   <td><?= $p['anio'] ? intval($p['anio']) : '—' ?></td>
                   <td><?= $p['visible'] ? '✅ Sí' : '⛔ No' ?></td>
                   <td style="white-space:nowrap">
-                    <a href="editar_pub.php?id=<?= $p['id'] ?>" class="btn btn-secundario btn-sm">Editar</a>
+                    <a href="editar_pub.php?id=<?= $p['id'] ?>" class="btn btn-editar-publicacion btn-sm">Editar</a>
                     <a href="eliminar_pub.php?id=<?= $p['id'] ?>" class="btn btn-peligro btn-sm"
                       onclick="return confirm('¿Eliminar esta publicación?')">Eliminar</a>
                   </td>

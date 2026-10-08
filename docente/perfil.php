@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="panel-layout">
     <aside class="panel-sidebar">
-      <div class="logo"><strong>TESCI · LGAC</strong><span>Panel Docente</span></div>
+      <div class="logo"><strong>TESCI · LGAC</strong><span>Panel Docente</span><span class="panel-user-name">Bienvenido, <?= htmlspecialchars($_SESSION['nombre'] ?? 'Docente') ?></span></div>
       <ul class="sidebar-nav">
         <li><a href="panel.php">📋 Mis publicaciones</a></li>
         <li><a href="nueva_pub.php">➕ Nueva publicación</a></li>

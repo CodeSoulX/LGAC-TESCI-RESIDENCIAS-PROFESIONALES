@@ -24,7 +24,7 @@ $docentes = $db->query(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Panel Admin · TESCI LGAC</title>
-  <link rel="stylesheet" href="../assets/css/main.css?v=2">
+  <link rel="stylesheet" href="../assets/css/main.css?v=<?= filemtime(__DIR__ . '/../assets/css/main.css') ?>">
   <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>
 
@@ -35,6 +35,7 @@ $docentes = $db->query(
       <ul class="sidebar-nav">
         <li><a href="panel.php" class="activo">👥 Docentes</a></li>
         <li><a href="nuevo_docente.php">➕ Nuevo docente</a></li>
+        <li><a href="galeria.php">▧ Galería multimedia</a></li>
         <li><a href="../index.php" target="_blank">🌐 Ver portal</a></li>
         <li><a href="logout.php" style="margin-top:2rem;opacity:.7;">🚪 Cerrar sesión</a></li>
       </ul>
@@ -54,6 +55,8 @@ $docentes = $db->query(
         <div class="alerta alerta-info">Acceso desactivado. El docente ya no puede iniciar sesión.</div>
       <?php elseif ($msg === 'eliminado'): ?>
         <div class="alerta alerta-exito">El integrante y sus publicaciones fueron eliminados.</div>
+      <?php elseif ($msg === 'password_restablecida'): ?>
+        <div class="alerta alerta-exito">La contraseña del docente se restableció correctamente.</div>
       <?php elseif ($msg === 'error'): ?>
         <div class="alerta alerta-error">No se pudo completar la acción. Recarga la página e inténtalo de nuevo.</div>
       <?php endif; ?>
@@ -64,7 +67,7 @@ $docentes = $db->query(
       </div>
 
       <div class="tabla-contenedor">
-        <table class="tabla">
+        <table class="tabla tabla-docentes">
           <thead>
             <tr>
               <th>Nombre</th>
@@ -85,9 +88,12 @@ $docentes = $db->query(
                 <td><?= $d['activo'] ? '<span style="color:#27ae60;font-weight:600;">Activo</span>' : '<span style="color:#c0392b;">Inactivo</span>' ?></td>
                 <td class="acciones-columna">
                   <div class="acciones-botones">
+                    <a href="restablecer_password.php?id=<?= intval($d['id']) ?>"
+                      class="btn btn-restablecer btn-sm" title="Restablecer contraseña"
+                      aria-label="Restablecer contraseña de <?= htmlspecialchars($d['nombre'] . ' ' . $d['apellidos']) ?>">Restablecer</a>
                     <?php if ($d['activo']): ?>
                       <a href="toggle_docente.php?id=<?= $d['id'] ?>&accion=desactivar"
-                        class="btn btn-peligro btn-sm"
+                        class="btn btn-desactivar btn-sm"
                         onclick="return confirm('¿Desactivar acceso a este docente?')">Desactivar</a>
                     <?php else: ?>
                       <a href="toggle_docente.php?id=<?= $d['id'] ?>&accion=activar"

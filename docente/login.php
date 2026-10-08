@@ -3,38 +3,34 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 iniciarSesionSegura();
-
-// Si ya está logueado, redirigir
-if (esDocente()) {
-    header('Location: ' . BASE_URL . '/docente/panel.php');
-    exit;
-}
+$sesionDocenteActiva = esDocente();
 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!verificarCSRF($_POST['csrf_token'] ?? '')) {
-        $error = 'Token inválido. Recarga la página.';
-    } else {
-        $correo   = trim($_POST['correo'] ?? '');
-        $password = $_POST['password'] ?? '';
+  if (!verificarCSRF($_POST['csrf_token'] ?? '')) {
+    $error = 'Token inválido. Recarga la página.';
+  } else {
+    $correo   = trim($_POST['correo'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-        if (!$correo || !$password) {
-            $error = 'Completa todos los campos.';
-        } else {
-            $resultado = login($correo, $password);
-            if ($resultado['ok']) {
-                header('Location: ' . BASE_URL . '/docente/panel.php');
-                exit;
-            } else {
-                $error = $resultado['msg'];
-            }
-        }
+    if (!$correo || !$password) {
+      $error = 'Completa todos los campos.';
+    } else {
+      $resultado = login($correo, $password);
+      if ($resultado['ok']) {
+        header('Location: ' . BASE_URL . '/docente/panel.php');
+        exit;
+      } else {
+        $error = $resultado['msg'];
+      }
     }
+  }
 }
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -42,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="stylesheet" href="../assets/css/main.css">
   <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>
+
 <body class="login-page">
   <div class="login-caja">
     <h1>Acceso docentes</h1>
@@ -51,13 +48,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="alerta alerta-error"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
+    <?php if ($sesionDocenteActiva): ?>
+      <div class="alerta alerta-info">
+        Sesión actual: <?= htmlspecialchars($_SESSION['nombre'] ?? 'docente') ?> en este navegador. Otros docentes pueden iniciar sesión al mismo tiempo desde sus propios navegadores o dispositivos. Si ingresas otra cuenta aquí, reemplazará la sesión de las pestañas de este navegador.
+      </div>
+    <?php endif; ?>
+
     <form method="POST" novalidate>
       <?= campoCSRF() ?>
       <div class="campo">
         <label for="correo">Correo institucional</label>
         <input type="email" id="correo" name="correo"
-               value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>"
-               required autocomplete="email">
+          value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>"
+          required autocomplete="email">
       </div>
       <div class="campo">
         <label for="password">Contraseña</label>
@@ -70,4 +73,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </p>
   </div>
 </body>
+
 </html>
