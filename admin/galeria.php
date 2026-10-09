@@ -152,7 +152,7 @@ $medios = $db->query(
                 <li><a href="nuevo_docente.php">➕ Nuevo docente</a></li>
                 <li><a href="galeria.php" class="activo">▧ Galería multimedia</a></li>
                 <li><a href="../index.php">🌐 Ver portal</a></li>
-                <li><a href="logout.php" class="sidebar-logout">🚪 Cerrar sesión</a></li>
+                <li><a href="logout.php" class="sidebar-logout" style="margin-top:2rem;opacity:.7;">🚪 Cerrar sesión</a></li>
             </ul>
         </aside>
 
