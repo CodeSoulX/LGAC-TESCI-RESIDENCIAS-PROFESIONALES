@@ -10,7 +10,6 @@ $error = '';
 
 // ── Categorías ─────────────────────────────────
 $cats = $db->query("SELECT * FROM categorias ORDER BY nombre")->fetchAll();
-$subcategoriasDisponibles = $db->query("SELECT DISTINCT nombre FROM subcategorias ORDER BY nombre")->fetchAll(PDO::FETCH_COLUMN);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (!verificarCSRF($_POST['csrf_token'] ?? '')) {
@@ -18,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   } else {
     $titulo      = trim($_POST['titulo'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
-    $subcategoria = trim($_POST['subcategoria'] ?? '');
     $anio        = intval($_POST['anio'] ?? 0) ?: null;
     $categoriaSeleccion = trim($_POST['categoria_id'] ?? '');
     $nuevaCategoria = trim($_POST['nueva_categoria'] ?? '');
@@ -27,20 +25,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$titulo || !$categoriaSeleccion) {
       $error = 'El título y la categoría son obligatorios.';
-    } elseif (mb_strlen($subcategoria, 'UTF-8') > 120) {
-      $error = 'La subcategoría no debe superar 120 caracteres.';
     } else {
       $pub_id = 0;
       try {
         $db->beginTransaction();
         $cat_id = resolverCategoriaPublicacion($db, $categoriaSeleccion, $nuevaCategoria);
-        $subcategoria = registrarSubcategoriaPublicacion($db, $cat_id, $subcategoria);
         $stmt = $db->prepare(
           "INSERT INTO publicaciones
-                 (usuario_id, categoria_id, subcategoria, titulo, descripcion, anio, visible, destacado)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+                 (usuario_id, categoria_id, titulo, descripcion, anio, visible, destacado)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)"
         );
-        $stmt->execute([$uid, $cat_id, $subcategoria ?: null, $titulo, $descripcion, $anio, $visible, $destacado]);
+        $stmt->execute([$uid, $cat_id, $titulo, $descripcion, $anio, $visible, $destacado]);
         $pub_id = $db->lastInsertId();
         $db->commit();
       } catch (InvalidArgumentException $validationError) {
@@ -152,18 +147,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <input type="text" id="nueva_categoria" name="nueva_categoria" maxlength="80"
             <?= (($_POST['categoria_id'] ?? '') === 'nueva') ? 'required' : '' ?>
             value="<?= htmlspecialchars($_POST['nueva_categoria'] ?? '') ?>">
-        </div>
-
-        <div class="campo">
-          <label for="subcategoria">Subcategoría (opcional)</label>
-          <input type="text" id="subcategoria" name="subcategoria" list="subcategorias-disponibles" maxlength="120"
-            value="<?= htmlspecialchars($_POST['subcategoria'] ?? '') ?>">
-          <datalist id="subcategorias-disponibles">
-            <?php foreach ($subcategoriasDisponibles as $subcategoriaDisponible): ?>
-              <option value="<?= htmlspecialchars($subcategoriaDisponible, ENT_QUOTES, 'UTF-8') ?>">
-              <?php endforeach; ?>
-          </datalist>
-          <small>Si escribes una nueva, quedará disponible en los filtros para futuras publicaciones.</small>
         </div>
 
         <div class="campo">

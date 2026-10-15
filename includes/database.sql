@@ -77,6 +77,20 @@ CREATE TABLE IF NOT EXISTS archivos (
     INDEX idx_publicacion (publicacion_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- ─── GALERÍA MULTIMEDIA ───────────────────────
+CREATE TABLE IF NOT EXISTS galeria_medios (
+    id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    tipo            ENUM('imagen','video') NOT NULL,
+    titulo          VARCHAR(255) NOT NULL,
+    url             VARCHAR(2048),
+    nombre_original VARCHAR(255),
+    nombre_guardado VARCHAR(255),
+    creado_por      INT UNSIGNED,
+    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (creado_por) REFERENCES usuarios(id) ON DELETE SET NULL,
+    INDEX idx_galeria_created (created_at, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- ─── SESIONES (tabla propia, más segura) ──────
 CREATE TABLE IF NOT EXISTS sesiones (
     token       CHAR(64) PRIMARY KEY,

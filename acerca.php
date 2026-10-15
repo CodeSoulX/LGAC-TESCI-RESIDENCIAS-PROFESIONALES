@@ -8,7 +8,7 @@ require_once __DIR__ . '/includes/config.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Acerca del Cuerpo Académico · TESCI</title>
-    <link rel="icon" type="image/png" href="assets/logoRino.jpg">
+    <link rel="icon" type="image/png" href="assets/logoRino.png">
     <link rel="stylesheet" href="assets/css/main.css?v=<?= filemtime(__DIR__ . '/assets/css/main.css') ?>">
 </head>
 

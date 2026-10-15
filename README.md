@@ -70,7 +70,7 @@ define('DB_PASS', 'tu_contrasena_mysql');
 define('BASE_URL', 'https://tu-dominio.example');
 ```
 
-No publiques credenciales reales en el repositorio. Para desarrollo local con la configuración actual de XAMPP, la aplicación usa `http://localhost:8080/Proyectos/tesi_lgac` porque IIS ocupa el puerto 80; ajusta `BASE_URL` si cambias el puerto o el servidor web.
+No publiques credenciales reales en el repositorio. `BASE_URL` debe coincidir con la URL desde la que abres este proyecto en el navegador; por ejemplo, en XAMPP: `http://localhost/Proyectos/LGAC-TESCI-RESIDENCIAS-PROFESIONALES`. Ajusta el puerto y la ruta si cambias la configuración del servidor o la carpeta del proyecto.
 
 ### 3. Preparar archivos subidos
 

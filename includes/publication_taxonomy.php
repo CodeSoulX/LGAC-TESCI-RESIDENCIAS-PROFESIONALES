@@ -40,30 +40,3 @@ function resolverCategoriaPublicacion(PDO $db, string $seleccion, string $nuevaC
 
     return (int) $categoriaId;
 }
-
-function registrarSubcategoriaPublicacion(PDO $db, int $categoriaId, string $nombre): string
-{
-    $nombre = trim($nombre);
-    if ($nombre === '') {
-        return '';
-    }
-    if (mb_strlen($nombre, 'UTF-8') > 120) {
-        throw new InvalidArgumentException('La subcategoría no debe superar 120 caracteres.');
-    }
-
-    $consulta = $db->prepare(
-        'SELECT nombre FROM subcategorias
-         WHERE categoria_id = ? AND LOWER(TRIM(nombre)) = LOWER(TRIM(?))
-         LIMIT 1'
-    );
-    $consulta->execute([$categoriaId, $nombre]);
-    $nombreExistente = $consulta->fetchColumn();
-    if ($nombreExistente !== false) {
-        return $nombreExistente;
-    }
-
-    $insertar = $db->prepare('INSERT IGNORE INTO subcategorias (categoria_id, nombre) VALUES (?, ?)');
-    $insertar->execute([$categoriaId, $nombre]);
-    $consulta->execute([$categoriaId, $nombre]);
-    return (string) $consulta->fetchColumn();
-}
