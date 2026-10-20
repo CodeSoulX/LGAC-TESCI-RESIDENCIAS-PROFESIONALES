@@ -562,6 +562,7 @@ a:hover {
   background: var(--arena);
   padding: 2rem 2.5rem;
   overflow-y: auto;
+  min-width: 0;
 }
 
 .panel-header {
@@ -582,6 +583,8 @@ a:hover {
 /* ─── Tabla de datos ────────────────────────── */
 .tabla-contenedor {
   overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tabla {
@@ -740,12 +743,43 @@ footer strong {
   }
 
   .panel-sidebar {
-    display: none;
+    display: block;
+    padding: 1rem;
   }
 
-  /* en móvil se puede agregar menú hamburguesa */
+  .panel-sidebar .logo {
+    margin-bottom: .75rem;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+  }
+
+  .sidebar-nav li {
+    flex: 1 1 auto;
+  }
+
+  .sidebar-nav li a {
+    justify-content: center;
+    height: 100%;
+    padding: .65rem .75rem;
+    text-align: center;
+  }
+
+  .sidebar-nav li:last-child a {
+    margin-top: 0 !important;
+  }
+
   .panel-main {
     padding: 1.25rem;
+  }
+
+  .panel-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: .75rem;
   }
 
   .tarjeta-pub {
@@ -755,8 +789,41 @@ footer strong {
   .nav-links {
     display: none;
   }
+}
 
-  /* simplificado; se puede añadir toggle */
+@media (max-width: 480px) {
+  .panel-sidebar {
+    padding: .85rem;
+  }
+
+  .sidebar-nav li {
+    flex-basis: calc(50% - .35rem);
+  }
+
+  .panel-main {
+    padding: 1rem;
+  }
+
+  .panel-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .panel-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .panel-header .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .login-page {
+    padding: 1rem;
+  }
+
+  .login-caja {
+    padding: 1.75rem 1.25rem;
+  }
 }
 
 /* Public portal styles */

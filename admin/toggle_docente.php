@@ -3,9 +3,14 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth.php';
 requerirAdmin();
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !verificarCSRF($_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    exit('Solicitud no válida.');
+}
+
 $db     = getDB();
-$id     = intval($_GET['id'] ?? 0);
-$accion = $_GET['accion'] ?? '';
+$id     = intval($_POST['id'] ?? 0);
+$accion = $_POST['accion'] ?? '';
 
 if ($id && in_array($accion, ['activar', 'desactivar'])) {
     // Asegurarse de no tocar admins

@@ -2,21 +2,29 @@
 Options -Indexes
 ServerSignature Off
 
-# Bloquear acceso directo a includes/
-<FilesMatch "\.(sql|php)$">
-  Order Allow,Deny
-  Allow from all
+# Bloquear archivos de configuración, control de versiones y documentación interna.
+<FilesMatch "(?i)^(?:\.env(?:\..*)?|composer\.(?:json|lock)|.*\.(?:sql|md|log|ini|lock))$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
 </FilesMatch>
 
-# Forzar HTTPS (descomenta cuando tengas SSL)
-# RewriteEngine On
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule (^|/)\.git(/|$) - [F,L]
+</IfModule>
+
+# includes/ tiene su propio .htaccess que deniega todo acceso web.
+# Activa el redireccionamiento HTTPS en el panel del hosting cuando el certificado SSL esté listo.
 
 # Cabeceras de seguridad
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
   Header set X-XSS-Protection "1; mode=block"
-  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Referrer-Policy "no-referrer"
 </IfModule>
