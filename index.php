@@ -5,7 +5,7 @@ $db = getDB();
 
 // ── Publicaciones públicas ────────────────────
 $pubs = $db->query(
-  "SELECT p.id, p.titulo, p.descripcion, p.anio, p.subcategoria, p.destacado, p.created_at,
+  "SELECT p.id, p.titulo, p.descripcion, p.anio, p.destacado, p.created_at,
             c.id AS categoria_id, c.nombre AS categoria, c.icono,
             u.nombre, u.apellidos, u.grado, u.foto_perfil
      FROM publicaciones p
@@ -16,11 +16,6 @@ $pubs = $db->query(
 )->fetchAll();
 
 $categorias = $db->query("SELECT id, nombre FROM categorias ORDER BY nombre")->fetchAll();
-$subcategorias = $db->query("SELECT categoria_id, nombre FROM subcategorias ORDER BY nombre")->fetchAll();
-$subcategoriasPorCategoria = [];
-foreach ($subcategorias as $subcategoria) {
-  $subcategoriasPorCategoria[$subcategoria['categoria_id']][$subcategoria['nombre']] = true;
-}
 
 // ── Archivos de cada publicación ──────────────
 $pub_ids = array_column($pubs, 'id');
@@ -88,7 +83,7 @@ foreach ($imagenes as $imagen) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cuerpo Académico LGAC · TESCI</title>
   <meta name="description" content="Proyectos, publicaciones y actividades del Cuerpo Académico LGAC del TESCI.">
-  <link rel="icon" type="image/png" href="assets/logoRino.jpg">
+  <link rel="icon" type="image/png" href="assets/logoRino.png">
   <link rel="stylesheet" href="assets/css/main.css?v=<?= filemtime(__DIR__ . '/assets/css/main.css') ?>">
 
 </head>
@@ -113,22 +108,6 @@ foreach ($imagenes as $imagen) {
                   <span><?= htmlspecialchars($categoria['nombre']) ?></span>
                 </label>
               <?php endforeach; ?>
-            </div>
-          </div>
-          <div class="publication-filter-group">
-            <h4>Subcategorías</h4>
-            <div class="publication-filter-list" id="publication-subcategory-filters">
-              <?php foreach ($subcategoriasPorCategoria as $categoriaId => $subcategorias): ?>
-                <?php foreach (array_keys($subcategorias) as $subcategoria): ?>
-                  <label class="publication-filter-option" data-category="<?= intval($categoriaId) ?>">
-                    <input class="publication-subcategory-filter" type="checkbox" value="<?= htmlspecialchars($subcategoria, ENT_QUOTES, 'UTF-8') ?>">
-                    <span><?= htmlspecialchars($subcategoria) ?></span>
-                  </label>
-                <?php endforeach; ?>
-              <?php endforeach; ?>
-              <?php if (!$subcategoriasPorCategoria): ?>
-                <p class="publication-filter-empty">Aún no hay subcategorías registradas.</p>
-              <?php endif; ?>
             </div>
           </div>
         </aside>
@@ -161,12 +140,11 @@ foreach ($imagenes as $imagen) {
                     break;
                   }
                 }
-                $textoBusqueda = mb_strtolower($p['titulo'] . ' ' . ($p['descripcion'] ?? '') . ' ' . $p['categoria'] . ' ' . ($p['subcategoria'] ?? '') . ' ' . ($p['grado'] ?? '') . ' ' . $p['nombre'] . ' ' . $p['apellidos'], 'UTF-8');
+                $textoBusqueda = mb_strtolower($p['titulo'] . ' ' . ($p['descripcion'] ?? '') . ' ' . $p['categoria'] . ' ' . ($p['grado'] ?? '') . ' ' . $p['nombre'] . ' ' . $p['apellidos'], 'UTF-8');
                 $fechaPublicacion = strtotime($p['created_at']);
                 ?>
                 <a class="publication-card" href="publicacion.php?id=<?= intval($p['id']) ?>"
                   data-category="<?= intval($p['categoria_id']) ?>"
-                  data-subcategory="<?= htmlspecialchars($p['subcategoria'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                   data-search="<?= htmlspecialchars($textoBusqueda, ENT_QUOTES, 'UTF-8') ?>">
                   <time class="publication-card-date" datetime="<?= date('Y-m-d', $fechaPublicacion) ?>"><?= date('j/m/Y', $fechaPublicacion) ?></time>
                   <div class="publication-card-media">

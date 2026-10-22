@@ -92,12 +92,20 @@ $docentes = $db->query(
                       class="btn btn-restablecer btn-sm" title="Restablecer contraseña"
                       aria-label="Restablecer contraseña de <?= htmlspecialchars($d['nombre'] . ' ' . $d['apellidos']) ?>">Restablecer</a>
                     <?php if ($d['activo']): ?>
-                      <a href="toggle_docente.php?id=<?= $d['id'] ?>&accion=desactivar"
-                        class="btn btn-desactivar btn-sm"
-                        onclick="return confirm('¿Desactivar acceso a este docente?')">Desactivar</a>
+                      <form method="POST" action="toggle_docente.php" class="acciones-form"
+                        onsubmit="return confirm('¿Desactivar acceso a este docente?')">
+                        <?= campoCSRF() ?>
+                        <input type="hidden" name="id" value="<?= intval($d['id']) ?>">
+                        <input type="hidden" name="accion" value="desactivar">
+                        <button type="submit" class="btn btn-desactivar btn-sm">Desactivar</button>
+                      </form>
                     <?php else: ?>
-                      <a href="toggle_docente.php?id=<?= $d['id'] ?>&accion=activar"
-                        class="btn btn-primario btn-sm">Activar</a>
+                      <form method="POST" action="toggle_docente.php" class="acciones-form">
+                        <?= campoCSRF() ?>
+                        <input type="hidden" name="id" value="<?= intval($d['id']) ?>">
+                        <input type="hidden" name="accion" value="activar">
+                        <button type="submit" class="btn btn-primario btn-sm">Activar</button>
+                      </form>
                     <?php endif; ?>
                     <form method="POST" action="eliminar_docente.php" class="acciones-form"
                       onsubmit="return confirm('¿Eliminar definitivamente a <?= htmlspecialchars(addslashes($d['nombre'] . ' ' . $d['apellidos']), ENT_QUOTES) ?>? También se borrarán sus publicaciones y archivos.');">

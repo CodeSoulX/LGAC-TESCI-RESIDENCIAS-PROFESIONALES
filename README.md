@@ -46,7 +46,7 @@ tesci_lgac/
 
 - PHP 8.0 o posterior con PDO y PDO MySQL habilitados
 - MySQL o MariaDB
-- Apache con `mod_rewrite` y `mod_headers` si se despliega con `.htaccess`
+- Apache con `mod_rewrite`, `mod_headers` y autorización `.htaccess` habilitada (`AllowOverride`) si se usa Apache
 - XAMPP para desarrollo local
 
 ---
@@ -60,24 +60,27 @@ tesci_lgac/
 
 ### 2. Configurar la conexión
 
-Abre `includes/config.php` y establece los valores de la base y la URL de acuerdo con el entorno:
+Configura estas variables de entorno en el servidor (por ejemplo, desde el panel del hosting):
 
-```php
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'tesi_lgac');
-define('DB_USER', 'tu_usuario_mysql');
-define('DB_PASS', 'tu_contrasena_mysql');
-define('BASE_URL', 'https://tu-dominio.example');
+```text
+DB_HOST=localhost
+DB_NAME=nombre_de_la_base
+DB_USER=usuario_mysql
+DB_PASS=contrasena_mysql
+BASE_URL=https://tu-dominio.example
+SESSION_COOKIE_SECURE=true
 ```
 
-No publiques credenciales reales en el repositorio. Para desarrollo local con la configuración actual de XAMPP, la aplicación usa `http://localhost:8080/Proyectos/tesi_lgac` porque IIS ocupa el puerto 80; ajusta `BASE_URL` si cambias el puerto o el servidor web.
+No publiques credenciales reales en el repositorio ni reutilices la cuenta `root` de MySQL en producción. `BASE_URL` debe coincidir con la URL pública y usar HTTPS. `SESSION_COOKIE_SECURE=true` hace que el navegador solo envíe la cookie de sesión por HTTPS; configura también el certificado y la redirección HTTPS en el panel del hosting antes de habilitarlo. Si el hosting termina HTTPS en un proxy, establece la variable explícitamente en `true`.
+
+En XAMPP local, si no defines esas variables, se usan los valores locales de `includes/config.php` y la cookie segura se activa automáticamente cuando PHP detecta HTTPS.
 
 ### 3. Preparar archivos subidos
 
 - Asegúrate de que `assets/uploads/` exista y el servidor web pueda escribir en ella.
 - Conserva `assets/uploads/.htaccess` para evitar la ejecución de scripts en archivos cargados.
 - No incluyas fotos, currículums ni otros documentos reales de `assets/uploads/` en el repositorio. En producción, conserva allí los archivos del servidor o respáldalos por separado.
-- En hosting, sube el código a `public_html/` o a la carpeta configurada para el dominio y usa HTTPS.
+- En hosting, sube el código a `public_html/` o a la carpeta configurada para el dominio y usa HTTPS. Conserva los `.htaccess`; comprueba con el proveedor que Apache permite sus reglas de acceso.
 
 ### 4. Ingresar al sistema
 
@@ -88,12 +91,29 @@ No publiques credenciales reales en el repositorio. Para desarrollo local con la
 | Panel docente | `/docente/login.php` | Docentes registrados |
 | Panel admin | `/admin/login.php` | Administrador |
 
-**Credenciales iniciales del administrador:**
-- Correo: `admin@tesi.edu.mx`
-- Contraseña: `Tesci26!`
-- La contraseña se guarda como bcrypt. Cámbiala después de la instalación y no reutilices esta clave en producción.
+La base nueva crea la cuenta administradora `223107219@cuautitlan.tecnm.mx` con una contraseña aleatoria que no se distribuye. Antes de habilitar el acceso público, configura el correo de recuperación (incluido `admin_recovery_email`), solicita **¿Olvidaste tu contraseña?** para esa cuenta y define una contraseña nueva desde el enlace recibido. El script no cambia las cuentas de una base de datos que ya existía.
 
-Si la base ya existía antes de instalar este proyecto, el correo o la contraseña pueden diferir de estos valores iniciales.
+### Recuperar contraseñas de docentes y administradores
+
+Ambas páginas de inicio de sesión tienen la opción **¿Olvidaste tu contraseña?**. Se escribe el correo de la cuenta y, si está activa, el sistema envía un enlace de un solo uso que vence a los 30 minutos. La nueva contraseña requiere al menos 12 caracteres. El mensaje de confirmación no revela si el correo existe y las solicitudes están limitadas para evitar abusos.
+
+Las tablas `recuperacion_solicitudes` y `recuperacion_tokens` tienen propósitos distintos:
+
+- `recuperacion_solicitudes` guarda hashes del correo y la IP, no contraseñas ni enlaces. Se usa para limitar intentos y los registros antiguos se limpian.
+- `recuperacion_tokens` guarda el hash del token, el usuario, su expiración y cuándo se usó. El enlace original solo se envía por correo; no queda guardado en la base.
+
+#### Configurar Gmail en XAMPP
+
+1. Instala las dependencias desde la carpeta del proyecto con `composer install` (PHPMailer se instala en `vendor/`, que no se sube al repositorio).
+2. Copia `includes/mail.local.example.php` como `includes/mail.local.php`.
+3. En `mail.local.php`, configura `host` como `smtp.gmail.com`, `port` como `587`, y usa el Gmail que enviará los mensajes en `username` y `from_email`. En `admin_recovery_email` configura el buzón donde el administrador recibirá sus enlaces. Para docentes se utiliza el correo registrado en cada cuenta. La recuperación queda deshabilitada hasta que SMTP y el correo del administrador estén configurados.
+4. Activa la verificación en dos pasos de Google y genera una **contraseña de aplicación** para este sistema. Escríbela en `password`; no uses ni compartas la contraseña normal de Google. Consulta la [ayuda oficial de Google para contraseñas de aplicación](https://support.google.com/accounts/answer/185833).
+5. `mail.local.php` está excluido de Git y protegido del acceso web por `includes/.htaccess`. Nunca envíes la contraseña de aplicación por chat ni la guardes en Git.
+6. Solicita una recuperación de prueba y revisa la bandeja de entrada y spam del destinatario.
+
+La recuperación por SMS no está habilitada: necesitaría una cuenta y credenciales de un proveedor de mensajería. En desarrollo local, `BASE_URL` usa `localhost`, así que el enlace del correo solo abre en la misma computadora donde corre XAMPP. Antes de que los docentes usen la recuperación de forma remota, publica el portal bajo su dominio HTTPS y actualiza `BASE_URL` a esa dirección.
+
+Para una base existente, aplica `includes/password_recovery_migration.sql` solo si aún no existen las dos tablas de recuperación. El administrador también puede restablecer la contraseña de un docente desde su panel; la recuperación por correo permite que el administrador recupere su propia cuenta sin iniciar sesión, siempre que tenga acceso a su buzón registrado.
 
 ---
 
@@ -150,6 +170,11 @@ Público
 - ✅ Consultas con PDO y parámetros preparados (anti SQL injection)
 - ✅ Validación de tipo MIME en subida de archivos
 - ✅ PHP no ejecutable en carpeta uploads
-- ✅ Directorio `includes/` bloqueado desde el navegador
-- ✅ Sesiones con cookie HttpOnly + SameSite
+- ✅ Archivos sensibles y directorio `includes/` bloqueados desde el navegador
+- ✅ Sesiones con cookie HttpOnly + SameSite y Secure cuando se usa HTTPS
+- ✅ Rutas administrativas verifican el rol vigente y desactivan sesiones de cuentas inactivas
+- ✅ Cambios de estado, eliminaciones y cierre de sesión usan POST con token CSRF
+- ✅ El inicio de sesión solo acepta contraseñas hasheadas con `password_verify()`
 - ✅ Sin registro público de usuarios
+
+Las cuentas que aún tengan contraseñas guardadas en texto plano ya no podrán iniciar sesión: restablécelas mediante el flujo **¿Olvidaste tu contraseña?** después de configurar el correo, o restablécelas desde una cuenta administradora antes de publicar el sitio. El script de instalación también trae una contraseña inicial de administrador conocida; cámbiala y verifica que no siga activa antes de exponer el hosting públicamente.

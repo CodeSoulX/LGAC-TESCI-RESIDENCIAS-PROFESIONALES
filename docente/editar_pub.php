@@ -19,7 +19,6 @@ if (!$pub) {
 }
 
 $cats    = $db->query("SELECT * FROM categorias ORDER BY nombre")->fetchAll();
-$subcategoriasDisponibles = $db->query("SELECT DISTINCT nombre FROM subcategorias ORDER BY nombre")->fetchAll(PDO::FETCH_COLUMN);
 $archivos = $db->prepare("SELECT * FROM archivos WHERE publicacion_id = ?");
 $archivos->execute([$id]);
 $archivos = $archivos->fetchAll();
@@ -30,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   } else {
     $titulo      = trim($_POST['titulo'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
-    $subcategoria = trim($_POST['subcategoria'] ?? '');
     $anio        = intval($_POST['anio'] ?? 0) ?: null;
     $categoriaSeleccion = trim($_POST['categoria_id'] ?? '');
     $nuevaCategoria = trim($_POST['nueva_categoria'] ?? '');
@@ -39,18 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$titulo || !$categoriaSeleccion) {
       $error = 'El título y la categoría son obligatorios.';
-    } elseif (mb_strlen($subcategoria, 'UTF-8') > 120) {
-      $error = 'La subcategoría no debe superar 120 caracteres.';
     } else {
       try {
         $db->beginTransaction();
         $cat_id = resolverCategoriaPublicacion($db, $categoriaSeleccion, $nuevaCategoria);
-        $subcategoria = registrarSubcategoriaPublicacion($db, $cat_id, $subcategoria);
         $db->prepare(
           "UPDATE publicaciones
-                 SET titulo=?, descripcion=?, anio=?, categoria_id=?, subcategoria=?, visible=?, destacado=?
+                 SET titulo=?, descripcion=?, anio=?, categoria_id=?, visible=?, destacado=?
                  WHERE id=? AND usuario_id=?"
-        )->execute([$titulo, $descripcion, $anio, $cat_id, $subcategoria ?: null, $visible, $destacado, $id, $uid]);
+        )->execute([$titulo, $descripcion, $anio, $cat_id, $visible, $destacado, $id, $uid]);
         $db->commit();
       } catch (InvalidArgumentException $validationError) {
         if ($db->inTransaction()) $db->rollBack();
@@ -172,18 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <input type="text" id="nueva_categoria" name="nueva_categoria" maxlength="80"
             <?= (($_POST['categoria_id'] ?? '') === 'nueva') ? 'required' : '' ?>
             value="<?= htmlspecialchars($_POST['nueva_categoria'] ?? '') ?>">
-        </div>
-
-        <div class="campo">
-          <label for="subcategoria">Subcategoría (opcional)</label>
-          <input type="text" id="subcategoria" name="subcategoria" list="subcategorias-disponibles" maxlength="120"
-            value="<?= htmlspecialchars($_POST['subcategoria'] ?? $pub['subcategoria'] ?? '') ?>">
-          <datalist id="subcategorias-disponibles">
-            <?php foreach ($subcategoriasDisponibles as $subcategoriaDisponible): ?>
-              <option value="<?= htmlspecialchars($subcategoriaDisponible, ENT_QUOTES, 'UTF-8') ?>">
-              <?php endforeach; ?>
-          </datalist>
-          <small>Si escribes una nueva, quedará disponible en los filtros para futuras publicaciones.</small>
         </div>
 
         <div class="campo">

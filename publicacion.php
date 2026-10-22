@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/config.php';
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $db = getDB();
 $stmt = $db->prepare(
-    "SELECT p.id, p.titulo, p.descripcion, p.anio, p.subcategoria, p.created_at,
+    "SELECT p.id, p.titulo, p.descripcion, p.anio, p.created_at,
             c.nombre AS categoria,
             u.nombre, u.apellidos, u.grado, u.especialidad
      FROM publicaciones p
@@ -119,12 +119,6 @@ $escaparRuta = static fn(string $ruta): string => str_replace('%2F', '/', rawurl
                             <dt><span aria-hidden="true">▰</span> Categoría</dt>
                             <dd><?= htmlspecialchars($publicacion['categoria']) ?></dd>
                         </div>
-                        <?php if ($publicacion['subcategoria']): ?>
-                            <div class="news-detail-item">
-                                <dt><span aria-hidden="true">▰</span> Subcategoría</dt>
-                                <dd><?= htmlspecialchars($publicacion['subcategoria']) ?></dd>
-                            </div>
-                        <?php endif; ?>
                         <div class="news-detail-item">
                             <dt><span aria-hidden="true">♟</span> Responsable</dt>
                             <dd><?= htmlspecialchars(trim(($publicacion['grado'] ?? '') . ' ' . $publicacion['nombre'] . ' ' . $publicacion['apellidos'])) ?></dd>
