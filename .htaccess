@@ -16,6 +16,7 @@ ServerSignature Off
 # includes/ tiene su propio .htaccess que deniega todo acceso web.
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  RewriteBase /Proyectos/LGAC_TESCI/
   RewriteRule (^|/)\.git(/|$) - [F,L]
 
   # Redirect legacy PHP URLs to their friendly equivalents for normal page requests.
