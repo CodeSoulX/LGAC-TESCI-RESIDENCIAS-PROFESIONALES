@@ -13,7 +13,7 @@ define('DB_CHARSET', 'utf8mb4');
 define(
     'BASE_URL',
     rtrim(
-        getenv('BASE_URL') ?: 'http://localhost/Proyectos/LGAC-TESCI-RESIDENCIAS-PROFESIONALES',
+        getenv('BASE_URL') ?: 'http://localhost/Proyectos/LGAC_TESCI',
         '/'
     )
 );

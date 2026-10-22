@@ -2074,3 +2074,144 @@ footer strong {
 .people-heading-copy {
   margin: 0;
 }
+
+.tarjeta-docente {
+  width: 100%;
+  border: 1px solid var(--portal-line);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tarjeta-docente:focus-visible {
+  outline: 3px solid var(--portal-blue);
+  outline-offset: 3px;
+}
+
+.tarjeta-docente .grado,
+.tarjeta-docente .nombre,
+.tarjeta-docente .espec {
+  display: block;
+}
+
+.people-dialog {
+  position: fixed;
+  width: min(560px, calc(100% - 2rem));
+  max-width: none;
+  max-height: min(80vh, 680px);
+  margin: auto;
+  padding: 2rem;
+  overflow: auto;
+  border: 1px solid var(--portal-line);
+  border-radius: 10px;
+  color: var(--texto);
+  background: var(--blanco);
+  box-shadow: 0 24px 80px rgba(7, 35, 62, .3);
+}
+
+.people-dialog::backdrop {
+  background: rgba(10, 28, 48, .58);
+  backdrop-filter: blur(3px);
+}
+
+.people-dialog-close {
+  position: absolute;
+  top: .65rem;
+  right: .85rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 50%;
+  color: var(--texto-suave);
+  background: transparent;
+  font: inherit;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.people-dialog-close:hover,
+.people-dialog-close:focus-visible {
+  color: var(--azul-oscuro);
+  background: #edf4f9;
+}
+
+.people-dialog-profile {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-right: 1.5rem;
+}
+
+.people-dialog-photo,
+.people-dialog-avatar {
+  flex: 0 0 96px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+}
+
+.people-dialog-photo {
+  object-fit: cover;
+}
+
+.people-dialog-avatar {
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--portal-blue);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.people-dialog-degree,
+.people-dialog-specialty {
+  color: var(--texto-suave);
+}
+
+.people-dialog-profile h2 {
+  margin: .15rem 0;
+  color: var(--azul-oscuro);
+  font-size: 1.35rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.people-dialog-bio {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--portal-line);
+}
+
+.people-dialog-bio h3 {
+  margin-bottom: .35rem;
+  color: var(--azul-oscuro);
+  font-size: 1rem;
+}
+
+.people-dialog-bio p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .people-dialog {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .people-dialog-profile {
+    align-items: flex-start;
+    gap: .85rem;
+  }
+
+  .people-dialog-photo,
+  .people-dialog-avatar {
+    flex-basis: 68px;
+    width: 68px;
+    height: 68px;
+  }
+
+  .people-dialog-profile h2 {
+    font-size: 1.1rem;
+  }
+}
