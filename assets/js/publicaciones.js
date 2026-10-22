@@ -71,3 +71,13 @@ document.querySelector('#publication-reset').addEventListener('click', () => {
   applyPublicationFilters();
 });
 renderPublications();
+
+const route = window.location.pathname.replace(/\/+$/, '');
+const sectionId = route.endsWith('/Proyectos') ? 'publicaciones' :
+  route.endsWith('/Recursos') ? 'galeria' : '';
+
+if (sectionId) {
+  window.addEventListener('load', () => {
+    document.getElementById(sectionId)?.scrollIntoView();
+  }, { once: true });
+}

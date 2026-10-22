@@ -110,7 +110,7 @@ function requerirAdmin(): void
             http_response_code(403);
             exit('Acceso denegado.');
         }
-        header('Location: ' . BASE_URL . '/admin/login.php');
+        header('Location: ' . BASE_URL . '/Admin/Login');
         exit;
     }
 }
@@ -118,7 +118,7 @@ function requerirAdmin(): void
 function requerirDocente(): void
 {
     if (!esDocente()) {
-        header('Location: ' . BASE_URL . '/docente/login.php');
+        header('Location: ' . BASE_URL . '/Docente/Login');
         exit;
     }
 }

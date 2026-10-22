@@ -200,7 +200,7 @@ foreach ($imagenes as $imagen) {
           <?php endforeach; ?>
           <?php if (!$elementosGaleria): ?>
             <div class="gallery-item">
-              <div class="gallery-empty">Las imágenes y videos agregados por administración, junto con imágenes de publicaciones públicas, aparecerán aquí.</div>
+              <div class="gallery-empty">Imágenes y videos, junto con imágenes de publicaciones públicas, aparecerán aquí.</div>
             </div>
           <?php endif; ?>
         </div>

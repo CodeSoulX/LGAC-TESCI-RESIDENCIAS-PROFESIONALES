@@ -13,13 +13,77 @@ ServerSignature Off
   </IfModule>
 </FilesMatch>
 
+# includes/ tiene su propio .htaccess que deniega todo acceso web.
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteRule (^|/)\.git(/|$) - [F,L]
-</IfModule>
 
-# includes/ tiene su propio .htaccess que deniega todo acceso web.
-# Activa el redireccionamiento HTTPS en el panel del hosting cuando el certificado SSL esté listo.
+  # Redirect legacy PHP URLs to their friendly equivalents for normal page requests.
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^index\.php$ Portal [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^admin/login\.php$ Admin/Login [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^admin/panel\.php$ Admin/Panel [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^admin/nuevo_docente\.php$ Admin/New-Docente [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^admin/galeria\.php$ Admin/Multimedia [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^admin/restablecer_password\.php$ Admin/Restablecer-Password [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^admin/toggle_docente\.php$ Admin/Toggle-Docente [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^admin/eliminar_docente\.php$ Admin/Eliminar-Docente [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^admin/logout\.php$ Admin/Logout [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^docente/login\.php$ Docente/Login [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^docente/panel\.php$ Docente/Panel [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^docente/nueva_pub\.php$ Docente/Nueva-Publicacion [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^docente/perfil\.php$ Docente/Perfil [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^docente/editar_pub\.php$ Docente/Editar-Publicacion [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^docente/eliminar_pub\.php$ Docente/Eliminar-Publicacion [R=302,L,NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^docente/logout\.php$ Docente/Logout [R=302,L,NC]
+
+  # Keep POST endpoints on PHP files; only normal page requests get redirected.
+  RewriteCond %{THE_REQUEST} \s/+[^\s?]*\.php(?:[?\s]) [NC]
+  RewriteCond %{REQUEST_METHOD} =GET
+  RewriteRule ^(.+)\.php$ $1 [R=302,L,NC]
+
+  # Friendly public, administrator, and teacher routes.
+  RewriteRule ^Proyectos/?$ index.php [END,NC]
+  RewriteRule ^Recursos/?$ index.php [END,NC]
+  RewriteRule ^Nosotros/?$ acerca.php [END,NC]
+  RewriteRule ^Integrantes/?$ integrantes.php [END,NC]
+  RewriteRule ^Portal/?$ index.php [END,NC]
+  RewriteRule ^Admin/?$ Admin/Login [R=302,L,NC]
+  RewriteRule ^Admin/Login/?$ admin/login.php [END,NC]
+  RewriteRule ^Admin/Panel/?$ admin/panel.php [END,NC]
+  RewriteRule ^Admin/New-Docente/?$ admin/nuevo_docente.php [END,NC]
+  RewriteRule ^Admin/Multimedia/?$ admin/galeria.php [END,NC]
+  RewriteRule ^Admin/Restablecer-Password/?$ admin/restablecer_password.php [END,NC]
+  RewriteRule ^Admin/Toggle-Docente/?$ admin/toggle_docente.php [END,NC]
+  RewriteRule ^Admin/Eliminar-Docente/?$ admin/eliminar_docente.php [END,NC]
+  RewriteRule ^Admin/Logout/?$ admin/logout.php [END,NC]
+  RewriteRule ^Docente/Login/?$ docente/login.php [END,NC]
+  RewriteRule ^Docente/Panel/?$ docente/panel.php [END,NC]
+  RewriteRule ^Docente/Nueva-Publicacion/?$ docente/nueva_pub.php [END,NC]
+  RewriteRule ^Docente/Perfil/?$ docente/perfil.php [END,NC]
+  RewriteRule ^Docente/Editar-Publicacion/?$ docente/editar_pub.php [END,NC]
+  RewriteRule ^Docente/Eliminar-Publicacion/?$ docente/eliminar_pub.php [END,NC]
+  RewriteRule ^Docente/Logout/?$ docente/logout.php [END,NC]
+
+  # Resolve extensionless URLs to matching PHP files without changing the URL.
+  RewriteCond %{REQUEST_FILENAME}.php -f
+  RewriteRule ^(.+?)/?$ $1.php [END,NC]
+</IfModule>
 
 # Cabeceras de seguridad
 <IfModule mod_headers.c>
