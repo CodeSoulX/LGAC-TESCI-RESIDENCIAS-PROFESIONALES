@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
       $resultado = login($correo, $password);
       if ($resultado['ok']) {
-        header('Location: ' . BASE_URL . '/docente/panel.php');
+        header('Location: ' . BASE_URL . '/Docente/Panel');
         exit;
       } else {
         $error = $resultado['msg'];
@@ -69,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button type="submit" class="btn btn-primario btn-bloque">Ingresar</button>
     </form>
     <p style="text-align:center;margin-top:1.25rem;font-size:.82rem;">
+      <a href="recuperar_password.php">¿Olvidaste tu contraseña?</a><br>
       <a href="../index.php">← Volver al portal público</a>
     </p>
   </div>

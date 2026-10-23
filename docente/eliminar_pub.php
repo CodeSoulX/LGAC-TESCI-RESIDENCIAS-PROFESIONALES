@@ -3,9 +3,14 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth.php';
 requerirDocente();
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !verificarCSRF($_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    exit('Solicitud no válida.');
+}
+
 $db  = getDB();
 $uid = $_SESSION['uid'];
-$id  = intval($_GET['id'] ?? 0);
+$id  = intval($_POST['id'] ?? 0);
 
 // Verificar propiedad
 $pub = $db->prepare("SELECT id FROM publicaciones WHERE id = ? AND usuario_id = ?");

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../includes/auth.php';
 
 iniciarSesionSegura();
 if (esAdmin()) {
-  header('Location: ' . BASE_URL . '/admin/panel.php');
+  header('Location: ' . BASE_URL . '/Admin/Panel');
   exit;
 }
 
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   } else {
     $resultado = login(trim($_POST['correo'] ?? ''), $_POST['password'] ?? '');
     if ($resultado['ok'] && $resultado['rol'] === 'admin') {
-      header('Location: ' . BASE_URL . '/admin/panel.php');
+      header('Location: ' . BASE_URL . '/Admin/Panel');
       exit;
     }
     $error = 'Acceso denegado o credenciales incorrectas.';
@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button type="submit" class="btn btn-primario btn-bloque">Ingresar</button>
     </form>
     <p style="text-align:center;margin-top:1rem;font-size:.82rem;">
+      <a href="../docente/recuperar_password.php">¿Olvidaste tu contraseña?</a><br>
       <a href="../docente/login.php">Soy docente →</a><br>
       <a href="../index.php">← Volver al portal público</a>
     </p>

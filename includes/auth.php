@@ -8,9 +8,9 @@ function iniciarSesionSegura(): void
         session_set_cookie_params([
             'lifetime' => 0,
             'path'     => '/',
-            'secure'   => false,   // cambiar a true en hosting con HTTPS
+            'secure'   => SESSION_COOKIE_SECURE,
             'httponly' => true,
-            'samesite' => 'Lax',   // Strict puede bloquear el token en local
+            'samesite' => 'Lax',
         ]);
         session_start();
     }
@@ -28,15 +28,7 @@ function login(string $correo, string $password): array
         return ['ok' => false, 'msg' => 'Correo o contraseña incorrectos.'];
     }
 
-    $passwordValida = password_verify($password, $usuario['password']);
-    if (!$passwordValida && hash_equals($usuario['password'], $password)) {
-        $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-        $db->prepare('UPDATE usuarios SET password = ? WHERE id = ?')
-            ->execute([$hash, $usuario['id']]);
-        $passwordValida = true;
-    }
-
-    if (!$passwordValida) {
+    if (!password_verify($password, $usuario['password'])) {
         return ['ok' => false, 'msg' => 'Correo o contraseña incorrectos.'];
     }
 
@@ -55,35 +47,70 @@ function logout(): void
 {
     iniciarSesionSegura();
     $_SESSION = [];
+    $cookieParams = session_get_cookie_params();
     session_destroy();
-    setcookie(session_name(), '', time() - 3600, '/');
+    setcookie(session_name(), '', [
+        'expires'  => time() - 42000,
+        'path'     => $cookieParams['path'],
+        'domain'   => $cookieParams['domain'],
+        'secure'   => $cookieParams['secure'],
+        'httponly' => $cookieParams['httponly'],
+        'samesite' => $cookieParams['samesite'] ?? 'Lax',
+    ]);
 }
 
 // ─── Verificar si está autenticado ────────────
-function estaAutenticado(): bool
+function rolActual(): ?string
 {
     iniciarSesionSegura();
-    return isset($_SESSION['uid']);
+    if (!isset($_SESSION['uid'])) {
+        return null;
+    }
+
+    static $uidVerificado = null;
+    static $rolVerificado = null;
+    if ($uidVerificado === $_SESSION['uid']) {
+        return $rolVerificado;
+    }
+
+    $stmt = getDB()->prepare('SELECT rol, activo FROM usuarios WHERE id = ? LIMIT 1');
+    $stmt->execute([$_SESSION['uid']]);
+    $usuario = $stmt->fetch();
+    if (!$usuario || !(int) $usuario['activo'] || !in_array($usuario['rol'], ['admin', 'docente'], true)) {
+        logout();
+        return null;
+    }
+
+    $uidVerificado = $_SESSION['uid'];
+    $rolVerificado = $usuario['rol'];
+    $_SESSION['rol'] = $rolVerificado;
+    return $rolVerificado;
+}
+
+function estaAutenticado(): bool
+{
+    return rolActual() !== null;
 }
 
 function esAdmin(): bool
 {
-    iniciarSesionSegura();
-    return isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin';
+    return rolActual() === 'admin';
 }
 
 function esDocente(): bool
 {
-    iniciarSesionSegura();
-    return isset($_SESSION['uid']) &&
-        in_array($_SESSION['rol'], ['admin', 'docente']);
+    return in_array(rolActual(), ['admin', 'docente'], true);
 }
 
 // ─── Proteger rutas ───────────────────────────
 function requerirAdmin(): void
 {
     if (!esAdmin()) {
-        header('Location: ' . BASE_URL . '/admin/login.php');
+        if (estaAutenticado()) {
+            http_response_code(403);
+            exit('Acceso denegado.');
+        }
+        header('Location: ' . BASE_URL . '/Admin/Login');
         exit;
     }
 }
@@ -91,7 +118,7 @@ function requerirAdmin(): void
 function requerirDocente(): void
 {
     if (!esDocente()) {
-        header('Location: ' . BASE_URL . '/docente/login.php');
+        header('Location: ' . BASE_URL . '/Docente/Login');
         exit;
     }
 }

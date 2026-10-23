@@ -91,8 +91,12 @@ $msg = $_GET['msg'] ?? '';
                   <td><?= $p['visible'] ? '✅ Sí' : '⛔ No' ?></td>
                   <td style="white-space:nowrap">
                     <a href="editar_pub.php?id=<?= $p['id'] ?>" class="btn btn-editar-publicacion btn-sm">Editar</a>
-                    <a href="eliminar_pub.php?id=<?= $p['id'] ?>" class="btn btn-peligro btn-sm"
-                      onclick="return confirm('¿Eliminar esta publicación?')">Eliminar</a>
+                    <form method="POST" action="eliminar_pub.php" style="display:inline"
+                      onsubmit="return confirm('¿Eliminar esta publicación?')">
+                      <?= campoCSRF() ?>
+                      <input type="hidden" name="id" value="<?= intval($p['id']) ?>">
+                      <button type="submit" class="btn btn-peligro btn-sm">Eliminar</button>
+                    </form>
                   </td>
                 </tr>
               <?php endforeach; ?>

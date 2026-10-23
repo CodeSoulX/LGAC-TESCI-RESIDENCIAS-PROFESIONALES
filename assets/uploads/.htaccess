@@ -1,7 +1,12 @@
 # Evitar que archivos subidos se ejecuten como PHP
 <FilesMatch "\.ph(p[3-8]?|t|tml)$">
-  Order Deny,Allow
-  Deny from all
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order Deny,Allow
+    Deny from all
+  </IfModule>
 </FilesMatch>
 Options -ExecCGI
 AddType text/plain .php .phtml .php3 .php4 .php5 .php7

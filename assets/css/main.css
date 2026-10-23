@@ -562,6 +562,7 @@ a:hover {
   background: var(--arena);
   padding: 2rem 2.5rem;
   overflow-y: auto;
+  min-width: 0;
 }
 
 .panel-header {
@@ -582,6 +583,8 @@ a:hover {
 /* ─── Tabla de datos ────────────────────────── */
 .tabla-contenedor {
   overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tabla {
@@ -740,12 +743,43 @@ footer strong {
   }
 
   .panel-sidebar {
-    display: none;
+    display: block;
+    padding: 1rem;
   }
 
-  /* en móvil se puede agregar menú hamburguesa */
+  .panel-sidebar .logo {
+    margin-bottom: .75rem;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+  }
+
+  .sidebar-nav li {
+    flex: 1 1 auto;
+  }
+
+  .sidebar-nav li a {
+    justify-content: center;
+    height: 100%;
+    padding: .65rem .75rem;
+    text-align: center;
+  }
+
+  .sidebar-nav li:last-child a {
+    margin-top: 0 !important;
+  }
+
   .panel-main {
     padding: 1.25rem;
+  }
+
+  .panel-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: .75rem;
   }
 
   .tarjeta-pub {
@@ -755,8 +789,41 @@ footer strong {
   .nav-links {
     display: none;
   }
+}
 
-  /* simplificado; se puede añadir toggle */
+@media (max-width: 480px) {
+  .panel-sidebar {
+    padding: .85rem;
+  }
+
+  .sidebar-nav li {
+    flex-basis: calc(50% - .35rem);
+  }
+
+  .panel-main {
+    padding: 1rem;
+  }
+
+  .panel-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .panel-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .panel-header .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .login-page {
+    padding: 1rem;
+  }
+
+  .login-caja {
+    padding: 1.75rem 1.25rem;
+  }
 }
 
 /* Public portal styles */
@@ -938,6 +1005,8 @@ footer strong {
 .publication-filters {
   position: sticky;
   top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
   padding: 18px;
   border: 2px solid #dbe5ff;
   border-radius: 7px;
@@ -1561,10 +1630,6 @@ footer strong {
     gap: 20px;
   }
 
-  .publication-filters {
-    position: static;
-  }
-
   .publication-feed {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1614,8 +1679,9 @@ footer strong {
 }
 
 .institutional-header {
-  position: relative;
-  z-index: 2;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   color: var(--portal-ink);
   background: #fff;
   box-shadow: 0 1px 0 rgba(14, 54, 90, .1);
@@ -1633,6 +1699,10 @@ footer strong {
   align-items: center;
   gap: 12px;
   min-width: 0;
+}
+
+.portal-menu-toggle {
+  display: none;
 }
 
 .institutional-logo {
@@ -1823,6 +1893,7 @@ footer strong {
 
 .portal-section {
   padding-block: 46px;
+  scroll-margin-top: 140px;
 }
 
 .portal-section--soft {
@@ -1918,6 +1989,15 @@ footer strong {
     width: calc(100% - 28px);
   }
 
+  .portal-section {
+    scroll-margin-top: 180px;
+  }
+
+  .publication-filters {
+    top: 232px;
+    max-height: max(80px, calc(100dvh - 252px));
+  }
+
   .institutional-top {
     grid-template-columns: 1fr;
     min-height: 0;
@@ -2001,6 +2081,85 @@ footer strong {
 
   .portal-footer-row {
     gap: 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  .institutional-top {
+    display: flex;
+    min-height: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-block: 8px;
+  }
+
+  .institutional-brand {
+    flex: 1;
+  }
+
+  .portal-menu-toggle {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--portal-line);
+    border-radius: 6px;
+    color: var(--portal-navy);
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .portal-menu-toggle svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 2;
+  }
+
+  .portal-menu-toggle:focus-visible {
+    outline: 3px solid #2999df;
+    outline-offset: 2px;
+  }
+
+  .portal-shortcuts {
+    display: none;
+    width: 100%;
+  }
+
+  .institutional-header.is-menu-open .portal-shortcuts {
+    display: block;
+  }
+
+  .portal-shortcuts .portal-wrap {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .portal-shortcut,
+  .portal-shortcut:nth-child(4) {
+    width: 100%;
+    padding: 10px 4px;
+    border: 0;
+    border-top: 1px solid var(--portal-line);
+  }
+
+  .portal-shortcut:nth-child(odd),
+  .portal-shortcut:nth-child(even) {
+    padding-inline: 4px;
+    border-right: 0;
+  }
+
+  .portal-shortcut:last-child {
+    grid-column: auto;
   }
 }
 
