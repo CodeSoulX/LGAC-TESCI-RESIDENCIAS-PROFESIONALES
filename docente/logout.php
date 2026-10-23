@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('Solicitud no válida.');
     }
     logout();
-    header('Location: ' . BASE_URL . '/docente/login.php');
+    header('Location: ' . BASE_URL . '/Docente/Login');
     exit;
 }
 

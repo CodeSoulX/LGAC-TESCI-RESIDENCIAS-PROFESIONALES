@@ -7,23 +7,29 @@
                 <span>TIC aplicadas a la Ingeniería</span>
             </div>
         </div>
-        <nav class="portal-shortcuts" aria-label="Accesos principales">
+        <button class="portal-menu-toggle" type="button" aria-expanded="false" aria-controls="portal-shortcuts">
+            <span class="sr-only">Abrir menú de navegación</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 6h18M3 12h18M3 18h18" />
+            </svg>
+        </button>
+        <nav class="portal-shortcuts" id="portal-shortcuts" aria-label="Accesos principales">
             <div class="portal-wrap">
-                <a class="portal-shortcut" href="index.php#publicaciones">
+                <a class="portal-shortcut" href="<?= BASE_URL ?>/Proyectos">
                     <span class="portal-shortcut-icon" aria-hidden="true"><svg viewBox="0 0 32 32">
                             <path d="M3 9h10l3 4h13v14H3z" />
                             <path d="M3 9V6h10l3 4" />
                         </svg></span>
                     <span><strong>Proyectos</strong><small>Trabajo en colaboración</small></span>
                 </a>
-                <a class="portal-shortcut" href="index.php#publicaciones">
+                <a class="portal-shortcut" href="<?= BASE_URL ?>/Recursos">
                     <span class="portal-shortcut-icon" aria-hidden="true"><svg viewBox="0 0 32 32">
                             <path d="M8 3h11l8 8v18H8z" />
                             <path d="M19 3v9h8M13 18h9M13 23h9" />
                         </svg></span>
-                    <span><strong>Publicaciones</strong><small>Artículos y productos</small></span>
+                    <span><strong>Recursos</strong><small>Artículos y Imagenes</small></span>
                 </a>
-                <a class="portal-shortcut" href="acerca.php">
+                <a class="portal-shortcut" href="<?= BASE_URL ?>/Nosotros">
                     <span class="portal-shortcut-icon" aria-hidden="true"><svg viewBox="0 0 32 32">
                             <path d="M16 3v4M16 25v4M3 16h4M25 16h4M6.8 6.8l2.8 2.8M22.4 22.4l2.8 2.8M25.2 6.8l-2.8 2.8M9.6 22.4l-2.8 2.8" />
                             <circle cx="16" cy="16" r="8" />
@@ -32,7 +38,7 @@
                     <span><strong>Sobre Nosotros</strong><small>¡Conócenos!</small></span>
                 </a>
                
-                <a class="portal-shortcut" href="integrantes.php">
+                <a class="portal-shortcut" href="<?= BASE_URL ?>/Integrantes">
                     <span class="portal-shortcut-icon" aria-hidden="true"><svg viewBox="0 0 32 32">
                             <circle cx="16" cy="9" r="4" />
                             <circle cx="6" cy="13" r="3" />
@@ -45,6 +51,7 @@
         </nav>
     </div>
 </header>
+<script src="<?= BASE_URL ?>/assets/js/portal-navigation.js?v=<?= filemtime(__DIR__ . '/../assets/js/portal-navigation.js') ?>" defer></script>
 <section class="portal-intro">
     <div class="portal-wrap portal-intro-row">
         <div>

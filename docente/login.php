@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
       $resultado = login($correo, $password);
       if ($resultado['ok']) {
-        header('Location: ' . BASE_URL . '/docente/panel.php');
+        header('Location: ' . BASE_URL . '/Docente/Panel');
         exit;
       } else {
         $error = $resultado['msg'];

@@ -10,10 +10,30 @@ define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 // URL base del sitio (sin / al final)
+$documentRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
+$projectRoot = realpath(__DIR__ . '/..');
+$projectPath = '';
+
+if ($documentRoot !== false && $projectRoot !== false) {
+    $documentRoot = rtrim($documentRoot, DIRECTORY_SEPARATOR);
+    $documentRootPrefix = $documentRoot . DIRECTORY_SEPARATOR;
+    if (strncasecmp($projectRoot, $documentRootPrefix, strlen($documentRootPrefix)) === 0) {
+        $projectPath = '/' . str_replace(
+            DIRECTORY_SEPARATOR,
+            '/',
+            substr($projectRoot, strlen($documentRootPrefix))
+        );
+    }
+}
+
+$urlScheme = !empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off'
+    ? 'https'
+    : 'http';
+$defaultBaseUrl = $urlScheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $projectPath;
 define(
     'BASE_URL',
     rtrim(
-        getenv('BASE_URL') ?: 'http://localhost/Proyectos/LGAC-TESCI-RESIDENCIAS-PROFESIONALES',
+        getenv('BASE_URL') ?: $defaultBaseUrl,
         '/'
     )
 );
