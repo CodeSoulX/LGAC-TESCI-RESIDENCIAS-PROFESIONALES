@@ -80,8 +80,8 @@ $docentes = $db->query(
                 <p class="people-dialog-specialty"></p>
             </div>
         </div>
-        <section class="people-dialog-bio" aria-label="Semblanza">
-            <h3>Acerca de</h3>
+        <section class="people-dialog-bio" aria-label="Semblanza del integrante">
+            <h3>Semblanza  </h3>
             <p></p>
         </section>
     </dialog>

@@ -91,29 +91,29 @@ En XAMPP local, si no defines esas variables, se usan los valores locales de `in
 | Panel docente | `/docente/login.php` | Docentes registrados |
 | Panel admin | `/admin/login.php` | Administrador |
 
-La base nueva crea la cuenta administradora `223107219@cuautitlan.tecnm.mx` con una contraseña aleatoria que no se distribuye. Antes de habilitar el acceso público, configura el correo de recuperación (incluido `admin_recovery_email`), solicita **¿Olvidaste tu contraseña?** para esa cuenta y define una contraseña nueva desde el enlace recibido. El script no cambia las cuentas de una base de datos que ya existía.
+La base nueva crea la cuenta administradora `223107219@cuautitlan.tecnm.mx` con una contraseña aleatoria que no se distribuye. El enlace de recuperación del administrador envía el código al `admin_recovery_email` configurado; no requiere escribir el correo usado para iniciar sesión. Antes de habilitar el acceso público, configura el correo y solicita un código para definir una contraseña nueva. El script no cambia las cuentas de una base de datos que ya existía.
 
-### Recuperar contraseñas de docentes y administradores
+### Recuperar contraseña del administrador
 
-Ambas páginas de inicio de sesión tienen la opción **¿Olvidaste tu contraseña?**. Se escribe el correo de la cuenta y, si está activa, el sistema envía un enlace de un solo uso que vence a los 30 minutos. La nueva contraseña requiere al menos 12 caracteres. El mensaje de confirmación no revela si el correo existe y las solicitudes están limitadas para evitar abusos.
+Solo la página de inicio de sesión del administrador ofrece **¿Olvidaste tu contraseña?**. El código del administrador llega al buzón alternativo `admin_recovery_email`; los docentes no recuperan su contraseña por correo. Si un docente la olvida, el administrador la restablece desde su panel de gestión. El código de administrador vence a los 10 minutos, solo se puede usar una vez y su hash se guarda en la base de datos.
 
 Las tablas `recuperacion_solicitudes` y `recuperacion_tokens` tienen propósitos distintos:
 
-- `recuperacion_solicitudes` guarda hashes del correo y la IP, no contraseñas ni enlaces. Se usa para limitar intentos y los registros antiguos se limpian.
-- `recuperacion_tokens` guarda el hash del token, el usuario, su expiración y cuándo se usó. El enlace original solo se envía por correo; no queda guardado en la base.
+- `recuperacion_solicitudes` guarda hashes del correo y la IP, no contraseñas ni códigos. Se usa para limitar solicitudes y validaciones; los registros antiguos se limpian.
+- `recuperacion_tokens` guarda el hash del código, el usuario, su expiración y cuándo se usó. El código original solo se envía por correo; no queda guardado en la base.
 
 #### Configurar Gmail en XAMPP
 
 1. Instala las dependencias desde la carpeta del proyecto con `composer install` (PHPMailer se instala en `vendor/`, que no se sube al repositorio).
 2. Copia `includes/mail.local.example.php` como `includes/mail.local.php`.
-3. En `mail.local.php`, configura `host` como `smtp.gmail.com`, `port` como `587`, y usa el Gmail que enviará los mensajes en `username` y `from_email`. En `admin_recovery_email` configura el buzón donde el administrador recibirá sus enlaces. Para docentes se utiliza el correo registrado en cada cuenta. La recuperación queda deshabilitada hasta que SMTP y el correo del administrador estén configurados.
+3. `includes/mail.local.php` ya está preparado localmente con `ado399512@gmail.com` como cuenta emisora y buzón de recuperación del administrador. En el archivo agrega la contraseña de aplicación de Gmail en `password`.
 4. Activa la verificación en dos pasos de Google y genera una **contraseña de aplicación** para este sistema. Escríbela en `password`; no uses ni compartas la contraseña normal de Google. Consulta la [ayuda oficial de Google para contraseñas de aplicación](https://support.google.com/accounts/answer/185833).
 5. `mail.local.php` está excluido de Git y protegido del acceso web por `includes/.htaccess`. Nunca envíes la contraseña de aplicación por chat ni la guardes en Git.
 6. Solicita una recuperación de prueba y revisa la bandeja de entrada y spam del destinatario.
 
-La recuperación por SMS no está habilitada: necesitaría una cuenta y credenciales de un proveedor de mensajería. En desarrollo local, `BASE_URL` usa `localhost`, así que el enlace del correo solo abre en la misma computadora donde corre XAMPP. Antes de que los docentes usen la recuperación de forma remota, publica el portal bajo su dominio HTTPS y actualiza `BASE_URL` a esa dirección.
+La recuperación por SMS no está habilitada: necesitaría una cuenta y credenciales de un proveedor de mensajería. En desarrollo local, `BASE_URL` usa `localhost`; solicita y valida los códigos desde la computadora donde corre XAMPP.
 
-Para una base existente, aplica `includes/password_recovery_migration.sql` solo si aún no existen las dos tablas de recuperación. El administrador también puede restablecer la contraseña de un docente desde su panel; la recuperación por correo permite que el administrador recupere su propia cuenta sin iniciar sesión, siempre que tenga acceso a su buzón registrado.
+Para una base existente, aplica `includes/password_recovery_migration.sql` solo si aún no existen las tablas de recuperación. El administrador puede restablecer la contraseña de un docente desde su panel; la recuperación por correo está reservada exclusivamente a la cuenta administradora.
 
 ---
 

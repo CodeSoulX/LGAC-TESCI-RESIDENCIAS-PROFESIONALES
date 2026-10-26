@@ -6,7 +6,7 @@ if (is_file($autoload)) {
     require_once $autoload;
 }
 
-function registrarSolicitudRecuperacion(PDO $db, string $correo, string $ip): bool
+function registrarIntentoRecuperacion(PDO $db, string $correo, string $ip): bool
 {
     $correoHash = hash('sha256', strtolower(trim($correo)));
     $ipHash = hash('sha256', $ip);
@@ -33,16 +33,18 @@ function registrarSolicitudRecuperacion(PDO $db, string $correo, string $ip): bo
     return $permitida;
 }
 
-function enviarCorreoRecuperacion(string $correo, string $nombre, string $url): bool
+function enviarCorreoRecuperacion(string $correo, string $nombre, string $codigo, ?string &$errorEnvio = null): bool
 {
     if (
         !class_exists(\PHPMailer\PHPMailer\PHPMailer::class) ||
+        SMTP_HOST === '' ||
         !filter_var(MAIL_FROM_EMAIL, FILTER_VALIDATE_EMAIL) ||
         !filter_var(SMTP_USERNAME, FILTER_VALIDATE_EMAIL) ||
         SMTP_PASSWORD === '' ||
         SMTP_PORT < 1 ||
         SMTP_PORT > 65535
     ) {
+        $errorEnvio = 'Falta configurar el servidor de correo.';
         error_log('Password recovery email not sent: PHPMailer or SMTP settings are missing or invalid.');
         return false;
     }
@@ -62,12 +64,15 @@ function enviarCorreoRecuperacion(string $correo, string $nombre, string $url): 
         $mailer->Subject = 'Recuperar contraseña · TESCI LGAC';
         $mailer->Body = "Hola {$nombre},\n\n";
         $mailer->Body .= "Recibimos una solicitud para cambiar la contraseña de tu cuenta.\n";
-        $mailer->Body .= "Abre este enlace en los próximos 30 minutos y elige una contraseña nueva:\n\n";
-        $mailer->Body .= "{$url}\n\n";
-        $mailer->Body .= "El enlace solo se puede usar una vez. Si no solicitaste el cambio, ignora este mensaje.\n";
+        $mailer->Body .= "Escribe este código en la plataforma dentro de los próximos 10 minutos:\n\n";
+        $mailer->Body .= "{$codigo}\n\n";
+        $mailer->Body .= "El código solo se puede usar una vez. Si no solicitaste el cambio, ignora este mensaje.\n";
         $mailer->AltBody = $mailer->Body;
         $mailer->send();
     } catch (\PHPMailer\PHPMailer\Exception $exception) {
+        $errorEnvio = stripos($mailer->ErrorInfo, 'authenticate') !== false
+            ? 'Gmail rechazó la autenticación SMTP. Revisa que uses una contraseña de aplicación vigente en includes/mail.local.php, no la contraseña normal de Gmail.'
+            : 'El servidor de correo rechazó el envío. Revisa la configuración SMTP y el registro de errores de XAMPP.';
         error_log('Password recovery SMTP delivery failed: ' . $mailer->ErrorInfo);
         return false;
     }
@@ -75,16 +80,13 @@ function enviarCorreoRecuperacion(string $correo, string $nombre, string $url): 
     return true;
 }
 
-function obtenerDestinoRecuperacion(array $usuario): ?string
+function correoRecuperacionConfigurado(): bool
 {
-    if (($usuario['rol'] ?? '') === 'admin') {
-        return filter_var(ADMIN_RECOVERY_EMAIL, FILTER_VALIDATE_EMAIL)
-            ? ADMIN_RECOVERY_EMAIL
-            : null;
-    }
-
-    $correo = $usuario['correo'] ?? '';
-    return is_string($correo) && filter_var($correo, FILTER_VALIDATE_EMAIL)
-        ? $correo
-        : null;
+    return class_exists(\PHPMailer\PHPMailer\PHPMailer::class) &&
+        SMTP_HOST !== '' &&
+        filter_var(MAIL_FROM_EMAIL, FILTER_VALIDATE_EMAIL) !== false &&
+        filter_var(SMTP_USERNAME, FILTER_VALIDATE_EMAIL) !== false &&
+        SMTP_PASSWORD !== '' &&
+        SMTP_PORT >= 1 &&
+        SMTP_PORT <= 65535;
 }

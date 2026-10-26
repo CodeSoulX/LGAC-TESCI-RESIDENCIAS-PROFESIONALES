@@ -1,77 +1,65 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/password_recovery.php';
 
 iniciarSesionSegura();
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Referrer-Policy: no-referrer');
 $db = getDB();
-$token = $_GET['token'] ?? '';
-$tokenValido = is_string($token) && preg_match('/\A[a-f0-9]{64}\z/', $token) === 1;
-$tokenHash = $tokenValido ? hash('sha256', $token) : '';
 $error = '';
 $completado = false;
 
-if ($tokenValido) {
-    $consulta = $db->prepare(
-        "SELECT rt.id, u.rol FROM recuperacion_tokens rt
-         JOIN usuarios u ON u.id = rt.usuario_id
-         WHERE rt.token_hash = ? AND rt.used_at IS NULL AND rt.expires_at > NOW()
-           AND u.activo = 1 AND u.rol IN ('docente', 'admin')
-         LIMIT 1"
-    );
-    $consulta->execute([$tokenHash]);
-    $tokenUsuario = $consulta->fetch();
-    $tokenValido = (bool) $tokenUsuario;
-    $rolRestablecido = $tokenUsuario['rol'] ?? null;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrfToken = $_POST['csrf_token'] ?? '';
+    $codigoIngresado = $_POST['codigo'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $confirmacion = $_POST['confirmacion'] ?? '';
+
     if (!is_string($csrfToken) || !verificarCSRF($csrfToken)) {
         $error = 'La solicitud expiró. Recarga la página e inténtalo otra vez.';
-    } elseif (!$tokenValido) {
-        $error = 'El enlace no es válido o ya expiró. Solicita uno nuevo.';
+    } elseif (!is_string($codigoIngresado) || preg_match('/\A[0-9]{8}\z/', $codigoIngresado) !== 1) {
+        $error = 'Escribe el código de ocho dígitos que recibiste.';
+    } elseif (!is_string($password) || !is_string($confirmacion)) {
+        $error = 'Escribe una contraseña válida.';
+    } elseif (strlen($password) < 12) {
+        $error = 'La contraseña debe tener al menos 12 caracteres.';
+    } elseif (strlen($password) > 72) {
+        $error = 'La contraseña no debe superar 72 bytes.';
+    } elseif ($password !== $confirmacion) {
+        $error = 'Las contraseñas no coinciden.';
     } else {
-        $password = $_POST['password'] ?? '';
-        $confirmacion = $_POST['confirmacion'] ?? '';
-
-        if (!is_string($password) || !is_string($confirmacion)) {
-            $error = 'Escribe una contraseña válida.';
-        } elseif (strlen($password) < 12) {
-            $error = 'La contraseña debe tener al menos 12 caracteres.';
-        } elseif (strlen($password) > 72) {
-            $error = 'La contraseña no debe superar 72 bytes.';
-        } elseif ($password !== $confirmacion) {
-            $error = 'Las contraseñas no coinciden.';
+        $correo = strtolower(trim(ADMIN_RECOVERY_EMAIL));
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        if (!registrarIntentoRecuperacion($db, $correo, $ip)) {
+            $error = 'No se pudo validar el código. Solicita uno nuevo o inténtalo más tarde.';
         } else {
-            $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
             $db->beginTransaction();
             try {
                 $consulta = $db->prepare(
-                    "SELECT rt.id, rt.usuario_id, u.rol FROM recuperacion_tokens rt
+                    "SELECT rt.id, rt.usuario_id, rt.token_hash, u.rol
+                     FROM recuperacion_tokens rt
                      JOIN usuarios u ON u.id = rt.usuario_id
-                     WHERE rt.token_hash = ? AND rt.used_at IS NULL AND rt.expires_at > NOW()
-                       AND u.activo = 1 AND u.rol IN ('docente', 'admin')
+                     WHERE u.rol = 'admin' AND u.activo = 1
+                       AND rt.used_at IS NULL AND rt.expires_at > NOW()
                      LIMIT 1 FOR UPDATE"
                 );
-                $consulta->execute([$tokenHash]);
+                $consulta->execute();
                 $registro = $consulta->fetch();
 
-                if (!$registro) {
+                if (!$registro || !password_verify($codigoIngresado, $registro['token_hash'])) {
                     $db->rollBack();
-                    $tokenValido = false;
-                    $error = 'El enlace no es válido o ya expiró. Solicita uno nuevo.';
+                    $error = 'El código no es válido o ya expiró. Solicita uno nuevo.';
                 } else {
+                    $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
                     $actualizar = $db->prepare(
                         "UPDATE usuarios SET password = ?
-                         WHERE id = ? AND rol IN ('docente', 'admin') AND activo = 1"
+                         WHERE id = ? AND rol = 'admin' AND activo = 1"
                     );
                     $actualizar->execute([$hash, $registro['usuario_id']]);
 
                     if ($actualizar->rowCount() !== 1) {
                         $db->rollBack();
-                        $tokenValido = false;
                         $error = 'No se pudo recuperar esta cuenta. Contacta al administrador.';
                     } else {
                         $db->prepare('UPDATE recuperacion_tokens SET used_at = NOW() WHERE id = ?')
@@ -82,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ->execute([$registro['usuario_id']]);
                         $db->commit();
                         $completado = true;
-                        $rolRestablecido = $registro['rol'];
                     }
                 }
             } catch (Throwable $exception) {
@@ -116,20 +103,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if ($completado): ?>
             <div class="alerta alerta-exito" role="status">Tu contraseña se actualizó correctamente.</div>
             <p style="text-align:center;margin-top:1.25rem;">
-                <a class="btn btn-primario btn-bloque" href="<?= $rolRestablecido === 'admin' ? '../admin/login.php' : 'login.php' ?>">Iniciar sesión</a>
-            </p>
-        <?php elseif (!$tokenValido): ?>
-            <div class="alerta alerta-error"><?= htmlspecialchars($error ?: 'El enlace no es válido o ya expiró. Solicita uno nuevo.') ?></div>
-            <p style="text-align:center;margin-top:1.25rem;">
-                <a href="recuperar_password.php">Solicitar otro enlace</a>
+                <a class="btn btn-primario btn-bloque" href="login.php">Iniciar sesión</a>
             </p>
         <?php else: ?>
             <?php if ($error): ?>
-                <div class="alerta alerta-error"><?= htmlspecialchars($error) ?></div>
+                <div class="alerta alerta-error" role="alert"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
-            <p>Elige una contraseña nueva de al menos 12 caracteres.</p>
-            <form method="POST">
+            <p>Escribe el código enviado al buzón de recuperación del administrador y elige una contraseña nueva de al menos 12 caracteres.</p>
+            <form method="POST" novalidate>
                 <?= campoCSRF() ?>
+                <div class="campo">
+                    <label for="codigo">Código de recuperación</label>
+                    <input type="text" id="codigo" name="codigo" required inputmode="numeric" pattern="[0-9]{8}" maxlength="8" autocomplete="one-time-code">
+                </div>
                 <div class="campo">
                     <label for="password">Nueva contraseña</label>
                     <input type="password" id="password" name="password" required minlength="12" maxlength="72" autocomplete="new-password">
@@ -140,6 +126,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <button type="submit" class="btn btn-primario btn-bloque">Guardar contraseña</button>
             </form>
+            <p style="text-align:center;margin-top:1.25rem;">
+                <a href="recuperar_password.php">Solicitar otro código</a>
+            </p>
         <?php endif; ?>
     </div>
 </body>
