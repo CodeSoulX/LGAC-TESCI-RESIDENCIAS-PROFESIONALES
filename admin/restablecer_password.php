@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <ul class="sidebar-nav">
                 <li><a href="panel.php" class="activo">👥 Docentes</a></li>
                 <li><a href="nuevo_docente.php">➕ Nuevo docente</a></li>
+                <li><a href="galeria.php">▧ Galería multimedia</a></li>
                 <li><a href="../index.php">🌐 Ver portal</a></li>
                 <li><a href="logout.php" style="margin-top:2rem;opacity:.7;">🚪 Cerrar sesión</a></li>
             </ul>
