@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS galeria_medios (
 INSERT INTO usuarios (nombre, apellidos, correo, password, rol)
 VALUES (
     'Administrador',
-    'TESCI',
+    'CCAI',
     '223107219@cuautitlan.tecnm.mx',
     '$2y$12$mCtAIOAtLOazYPhtsf3tz.OElAnQDxO0ys678igkl8GBtZ/i2AeFa',
     'admin'

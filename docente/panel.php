@@ -32,7 +32,7 @@ $msg = $_GET['msg'] ?? '';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mi panel · TESCI LGAC</title>
+  <title>Mi panel · CCAI LGAC</title>
   <link rel="stylesheet" href="../assets/css/main.css?v=<?= filemtime(__DIR__ . '/../assets/css/main.css') ?>">
   <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>
@@ -43,7 +43,7 @@ $msg = $_GET['msg'] ?? '';
     <!-- SIDEBAR -->
     <aside class="panel-sidebar">
       <div class="logo">
-        <strong>TESCI · LGAC</strong>
+        <strong>CCAI · LGAC</strong>
         <span>Panel Docente</span>
         <span class="panel-user-name">Bienvenido, <?= htmlspecialchars($_SESSION['nombre'] ?? 'Docente') ?></span>
       </div>

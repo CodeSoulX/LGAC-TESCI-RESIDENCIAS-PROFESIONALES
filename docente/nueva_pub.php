@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nueva publicación · TESCI LGAC</title>
+  <title>Nueva publicación · CCAI LGAC</title>
   <link rel="stylesheet" href="../assets/css/main.css">
   <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>
@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="panel-layout">
     <aside class="panel-sidebar">
-      <div class="logo"><strong>TESCI · LGAC</strong><span>Panel Docente</span><span class="panel-user-name">Bienvenido, <?= htmlspecialchars($_SESSION['nombre'] ?? 'Docente') ?></span></div>
+      <div class="logo"><strong>CCAI · LGAC</strong><span>Panel Docente</span><span class="panel-user-name">Bienvenido, <?= htmlspecialchars($_SESSION['nombre'] ?? 'Docente') ?></span></div>
       <ul class="sidebar-nav">
         <li><a href="panel.php">📋 Mis publicaciones</a></li>
         <li><a href="nueva_pub.php" class="activo">➕ Nueva publicación</a></li>

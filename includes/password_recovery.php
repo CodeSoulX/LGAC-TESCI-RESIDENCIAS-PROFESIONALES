@@ -61,7 +61,7 @@ function enviarCorreoRecuperacion(string $correo, string $nombre, string $codigo
         $mailer->CharSet = 'UTF-8';
         $mailer->setFrom(MAIL_FROM_EMAIL, MAIL_FROM_NAME);
         $mailer->addAddress($correo, $nombre);
-        $mailer->Subject = 'Recuperar contraseña · TESCI LGAC';
+        $mailer->Subject = 'Recuperar contraseña · CCAI LGAC';
         $mailer->Body = "Hola {$nombre},\n\n";
         $mailer->Body .= "Recibimos una solicitud para cambiar la contraseña de tu cuenta.\n";
         $mailer->Body .= "Escribe este código en la plataforma dentro de los próximos 10 minutos:\n\n";

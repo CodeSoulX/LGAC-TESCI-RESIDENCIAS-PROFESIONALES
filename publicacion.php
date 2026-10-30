@@ -49,7 +49,7 @@ $escaparRuta = static fn(string $ruta): string => str_replace('%2F', '/', rawurl
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= $publicacion ? htmlspecialchars($publicacion['titulo']) . ' · TESCI LGAC' : 'Publicación no encontrada · TESCI LGAC' ?></title>
+    <title><?= $publicacion ? htmlspecialchars($publicacion['titulo']) . ' · CCAI LGAC' : 'Publicación no encontrada · CCAI LGAC' ?></title>
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="stylesheet" href="assets/css/main.css?v=<?= filemtime(__DIR__ . '/assets/css/main.css') ?>">
     <link rel="stylesheet" href="assets/css/publicacion.css?v=<?= filemtime(__DIR__ . '/assets/css/publicacion.css') ?>">
@@ -60,7 +60,7 @@ $escaparRuta = static fn(string $ruta): string => str_replace('%2F', '/', rawurl
 
     <?php if (!$publicacion): ?>
         <main class="news-not-found">
-            <p class="news-category">TESCI · LGAC</p>
+            <p class="news-category">CCAI · LGAC</p>
             <h1>Publicación no encontrada</h1>
             <p>Es posible que haya sido retirada o que ya no esté disponible públicamente.</p>
             <a class="news-back" href="index.php#publicaciones">← Volver a publicaciones</a>
@@ -144,7 +144,7 @@ $escaparRuta = static fn(string $ruta): string => str_replace('%2F', '/', rawurl
         </main>
     <?php endif; ?>
 
-    <footer class="news-footer"><strong>TESCI · Cuerpo Académico LGAC</strong><br>Tecnológico de Estudios Superiores de Cuautitlán Izcalli · <?= date('Y') ?></footer>
+    <footer class="news-footer"><strong>CCAI · Cuerpo Académico LGAC</strong><br>Tecnológico de Estudios Superiores de Cuautitlán Izcalli · <?= date('Y') ?></footer>
     <?php if ($publicacion): ?>
         <script src="assets/js/publicacion.js?v=<?= filemtime(__DIR__ . '/assets/js/publicacion.js') ?>" defer></script>
     <?php endif; ?>

@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Administrador · TESCI LGAC</title>
+  <title>Administrador · CCAI LGAC</title>
   <link rel="stylesheet" href="../assets/css/main.css">
   <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="login-page">
   <div class="login-caja">
     <h1>Administrador</h1>
-    <p>Acceso restringido · Portal TESCI LGAC</p>
+    <p>Acceso restringido · Portal CCAI LGAC</p>
     <?php if ($error): ?>
       <div class="alerta alerta-error"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>

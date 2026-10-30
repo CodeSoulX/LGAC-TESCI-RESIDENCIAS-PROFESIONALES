@@ -1,5 +1,5 @@
 /* =============================================
-   TESCI · LGAC — Portal del Cuerpo Académico
+   CCAI · LGAC — Portal del Cuerpo Académico
    Paleta: azul institucional profundo + arena cálida
    Tipografía: Inter (sans) + Lora (serif display)
    ============================================= */
@@ -1562,7 +1562,140 @@ footer strong {
   font-size: .8rem;
 }
 
+.terms-page {
+  padding-block: 36px 64px;
+  background: #f3f8fc;
+}
+
+.terms-back {
+  display: inline-block;
+  margin-bottom: 18px;
+  color: #164b74;
+  font-size: .9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.terms-back:hover {
+  text-decoration: underline;
+}
+
+.terms-card {
+  max-width: 900px;
+  margin-inline: auto;
+  padding: clamp(24px, 5vw, 56px);
+  border: 1px solid #e1e8f0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(18, 62, 99, .07);
+}
+
+.terms-heading {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e1e8f0;
+}
+
+.terms-heading h1 {
+  margin: 8px 0;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+}
+
+.terms-heading p {
+  margin: 0;
+  color: #627286;
+}
+
+.terms-section {
+  padding-top: 24px;
+}
+
+.terms-section h2 {
+  margin: 0 0 10px;
+  font-size: 1.18rem;
+}
+
+.terms-section p {
+  margin: 0 0 12px;
+  color: #34475c;
+  line-height: 1.75;
+}
+
+.terms-section a {
+  color: #164b74;
+  overflow-wrap: anywhere;
+}
+
+.cookie-notice[hidden] {
+  display: none;
+}
+
+.cookie-notice {
+  position: fixed;
+  z-index: 1000;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  max-width: 900px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-inline: auto;
+  padding: 18px 20px;
+  border: 1px solid #d5e0eb;
+  border-radius: 8px;
+  color: #203148;
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(18, 45, 70, .2);
+}
+
+.cookie-notice-copy strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cookie-notice-copy p {
+  margin: 0;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+
+.cookie-notice-copy a {
+  color: #164b74;
+  font-weight: 600;
+}
+
+.cookie-notice-dismiss {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  background: #194dbb;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.cookie-notice-dismiss:hover {
+  background: #1643a4;
+}
+
 @media (max-width: 760px) {
+  .cookie-notice {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .cookie-notice-dismiss {
+    align-self: flex-start;
+  }
+
   .portal-wrap {
     width: min(100% - 32px, 600px);
   }

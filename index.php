@@ -81,9 +81,9 @@ foreach ($imagenes as $imagen) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cuerpo Académico LGAC · TESCI</title>
-  <meta name="description" content="Proyectos, publicaciones y actividades del Cuerpo Académico LGAC del TESCI.">
-  <link rel="icon" type="image/png" href="assets/logoRino.png">
+  <title>Cuerpo Académico LGAC · CCAI</title>
+  <meta name="description" content="Proyectos, publicaciones y actividades del Cuerpo Académico LGAC de CCAI.">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-cuerpo-academico.svg">
   <link rel="stylesheet" href="assets/css/main.css?v=<?= filemtime(__DIR__ . '/assets/css/main.css') ?>">
 
 </head>
@@ -210,6 +210,14 @@ foreach ($imagenes as $imagen) {
   </main>
 
   <?php require __DIR__ . '/includes/portal_footer.php'; ?>
+  <aside class="cookie-notice" id="cookie-notice" aria-label="Aviso sobre cookies">
+    <div class="cookie-notice-copy">
+      <strong>Uso de cookies</strong>
+      <p>Usamos cookies técnicas para mantener las sesiones al iniciar sesión en las áreas protegidas. No usamos cookies de analítica ni publicidad. Al elegir “Entendido”, guardaremos una preferencia para recordar que viste este aviso. <a href="terminos.php">Consulta los Términos y Condiciones</a>.</p>
+    </div>
+    <button class="cookie-notice-dismiss" id="cookie-notice-dismiss" type="button">Entendido</button>
+  </aside>
+  <script src="assets/js/cookie-notice.js?v=<?= filemtime(__DIR__ . '/assets/js/cookie-notice.js') ?>" defer></script>
   <script src="assets/js/publicaciones.js?v=<?= filemtime(__DIR__ . '/assets/js/publicaciones.js') ?>" defer></script>
 </body>
 

@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Restablecer contraseña · Admin TESCI</title>
+    <title>Restablecer contraseña · Admin CCAI</title>
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="panel-layout">
         <aside class="panel-sidebar">
-            <div class="logo"><strong>TESCI · LGAC</strong><span>Administrador</span></div>
+            <div class="logo"><strong>CCAI · LGAC</strong><span>Administrador</span></div>
             <ul class="sidebar-nav">
                 <li><a href="panel.php" class="activo">👥 Docentes</a></li>
                 <li><a href="nuevo_docente.php">➕ Nuevo docente</a></li>

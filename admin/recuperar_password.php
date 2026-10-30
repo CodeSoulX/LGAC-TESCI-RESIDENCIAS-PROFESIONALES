@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer">
-    <title>Recuperar contraseña · TESCI LGAC</title>
+    <title>Recuperar contraseña · CCAI LGAC</title>
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>

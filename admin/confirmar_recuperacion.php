@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer">
     <meta http-equiv="Cache-Control" content="no-store">
-    <title>Nueva contraseña · TESCI LGAC</title>
+    <title>Nueva contraseña · CCAI LGAC</title>
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>

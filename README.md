@@ -1,12 +1,12 @@
-# Portal del Cuerpo Académico LGAC · TESCI
+# Portal del Cuerpo Académico LGAC · CCAI
 
-Sistema web para difundir publicaciones, proyectos y actividades del Cuerpo Académico LGAC del Tecnológico de Estudios Superiores de Cuautitlán Izcalli (TESCI). Incluye un portal público, un panel de administración para gestionar integrantes y un panel privado para docentes.
+Sistema web para difundir publicaciones, proyectos y actividades del Cuerpo Académico LGAC del Tecnológico de Estudios Superiores de Cuautitlán Izcalli - CCAI. Incluye un portal público, un panel de administración para gestionar integrantes y un panel privado para docentes.
 
 ---
 
 ## Estructura de carpetas
 
-tesci_lgac/
+lgac_portal/
 ├── index.php              ← Vista pública (sin login)
 ├── publicacion.php        ← Detalle de publicación pública
 ├── .htaccess              ← Seguridad general

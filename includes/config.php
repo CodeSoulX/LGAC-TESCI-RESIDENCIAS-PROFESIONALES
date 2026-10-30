@@ -33,7 +33,7 @@ $defaultBaseUrl = $urlScheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . 
 define(
     'BASE_URL',
     rtrim(
-        getenv('BASE_URL') ?: 'http://localhost/Proyectos/LGAC-TESCI-RESIDENCIAS-PROFESIONALES',
+        getenv('BASE_URL') ?: 'http://localhost/Proyectos/LGAC_TESCI',
         '/'
     )
 );
@@ -56,7 +56,7 @@ define('SMTP_PORT', (int) ($mailConfig['port'] ?? 587));
 define('SMTP_USERNAME', $mailConfig['username'] ?? '');
 define('SMTP_PASSWORD', $mailConfig['password'] ?? '');
 define('MAIL_FROM_EMAIL', $mailConfig['from_email'] ?? '');
-define('MAIL_FROM_NAME', $mailConfig['from_name'] ?? 'TESCI LGAC');
+define('MAIL_FROM_NAME', $mailConfig['from_name'] ?? 'CCAI LGAC');
 define('ADMIN_RECOVERY_EMAIL', $mailConfig['admin_recovery_email'] ?? '');
 
 // Ruta absoluta a la carpeta uploads

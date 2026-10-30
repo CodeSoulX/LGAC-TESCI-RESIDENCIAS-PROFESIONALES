@@ -23,7 +23,7 @@ $docentes = $db->query(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Panel Admin · TESCI LGAC</title>
+  <title>Panel Admin · CCAI LGAC</title>
   <link rel="stylesheet" href="../assets/css/main.css?v=<?= filemtime(__DIR__ . '/../assets/css/main.css') ?>">
   <link rel="icon" type="image/png" href="../assets/logo.png">
 </head>
@@ -31,7 +31,7 @@ $docentes = $db->query(
 <body>
   <div class="panel-layout">
     <aside class="panel-sidebar">
-      <div class="logo"><strong>TESCI · LGAC</strong><span>Administrador</span></div>
+      <div class="logo"><strong>CCAI · LGAC</strong><span>Administrador</span></div>
       <ul class="sidebar-nav">
         <li><a href="panel.php" class="activo">👥 Docentes</a></li>
         <li><a href="nuevo_docente.php">➕ Nuevo docente</a></li>

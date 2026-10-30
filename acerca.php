@@ -7,8 +7,8 @@ require_once __DIR__ . '/includes/config.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Acerca del Cuerpo Académico · TESCI</title>
-    <link rel="icon" type="image/png" href="assets/logoRino.png">
+    <title>Acerca del Cuerpo Académico · CCAI</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo-cuerpo-academico.svg">
     <link rel="stylesheet" href="assets/css/main.css?v=<?= filemtime(__DIR__ . '/assets/css/main.css') ?>">
 </head>
 
@@ -52,7 +52,7 @@ require_once __DIR__ . '/includes/config.php';
                     <h3>Tecnológico de Estudios Superiores de Cuautitlán Izcalli</h3>
                     <p>Dirección: Fracción la Coyotera del Ejido, Av. Nopaltepec, Av San Antonio s/n, Industrial Cuamatla, 54748 Cuautitlán Izcalli, Méx.</p>
                     <hr>
-                    <p>Portal de consulta pública del Cuerpo Académico TESCI · LGAC.</p>
+                    <p>Portal de consulta pública del Cuerpo Académico CCAI · LGAC.</p>
                 </aside>
             </div>
         </section>

@@ -6,7 +6,7 @@ return [
     'username' => 'ado399512@gmail.com',
     'password' => 'ojgv dynh lfpp gvfe',
     'from_email' => 'ado399512@gmail.com',
-    'from_name' => 'TESCI LGAC',
+    'from_name' => 'CCAI LGAC',
     'admin_recovery_email' => 'ado399512@gmail.com',
 ];
     

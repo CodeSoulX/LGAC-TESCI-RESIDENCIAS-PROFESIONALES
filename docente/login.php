@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="login-page">
   <div class="login-caja">
     <h1>Acceso docentes</h1>
-    <p>Portal privado del cuerpo académico · TESCI</p>
+    <p>Portal privado del cuerpo académico · CCAI</p>
 
     <?php if ($error): ?>
       <div class="alerta alerta-error"><?= htmlspecialchars($error) ?></div>
